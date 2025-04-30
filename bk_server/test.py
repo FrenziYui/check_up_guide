@@ -18,10 +18,6 @@ isolateData = {}
 
 # DB接続情報。最終的にはsecretから取得
 coninfo = {
-    "server":"10.3.28.93",
-    "username":"KenshinView",
-    "password":"iseikai",
-    "database":"KENSHINV5",
     }
 
 # SQLserverアクセスオブジェクト作成

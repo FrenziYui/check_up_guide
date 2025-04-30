@@ -15,13 +15,7 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['JSON_AS_ASCII'] = False
 
 # DB接続情報。最終的にはsecretから取得
-coninfo = {
-    "server":"10.3.28.93",
-    "username":"KenshinView",
-    "password":"iseikai",
-    "database":"KENSHINV5",
-    }
-
+data = "yuichi.ikeda@holonicsystem.cloud"
 # SQLserverアクセスオブジェクト作成
 obj = clsDbAccSqlServer("DBTrn1",coninfo)
 
