@@ -1,0 +1,101 @@
+[
+  {
+    "name": "身体計測",
+    "idx": 0,
+    "inpCd": "i0101",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 10
+  },
+  {
+    "name": "医師診察",
+    "idx": 1,
+    "inpCd": "i0111",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 20
+  },
+  {
+    "name": "視力検査",
+    "idx": 2,
+    "inpCd": "i0121",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 30
+  },
+  {
+    "name": "心電図",
+    "idx": 3,
+    "inpCd": "i0131",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 40
+  },
+  {
+    "name": "超音波検査",
+    "idx": 4,
+    "inpCd": "i0141",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 50
+  },
+  {
+    "name": "MRI/MRA検査",
+    "idx": 5,
+    "inpCd": "i0151",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 60
+  },
+  {
+    "name": "CT検査",
+    "idx": 6,
+    "inpCd": "i0161",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 70
+  },
+  {
+    "name": "X線検査",
+    "idx": 7,
+    "inpCd": "i0171",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 80
+  },
+  {
+    "name": "内視鏡検査",
+    "idx": 8,
+    "inpCd": "i0181",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 90
+  },
+  {
+    "name": "採血",
+    "idx": 9,
+    "inpCd": "i0191",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 100
+  },
+  {
+    "name": "肺機能",
+    "idx": 10,
+    "inpCd": "i0201",
+    "status": "0",
+    "order": null,
+    "time": "",
+    "dspOrder": 110
+  }
+]

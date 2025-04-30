@@ -1,0 +1,27 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "firebase": "^10.14.1",
+    "flatpickr": "^4.6.13",
+    "nuxt": "^3.13.0",
+    "tabulator-tables": "^6.3.0",
+    "vue": "latest",
+    "vue-router": "latest",
+    "vue3-tailwind": "^0.3.4",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.13",
+    "sass": "^1.79.5"
+  }
+}

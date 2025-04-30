@@ -1,0 +1,12 @@
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+.venv
+__pycache__
+.pytest_cache
+auth
+yuii-46fec-firebase-adminsdk-ygaqf-2caef1e0dd.json
+authtest
+setting.py

@@ -1,0 +1,37 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@chenfengyuan/vue-barcode": "^2.0.2",
+    "@nuxtjs/i18n": "^8.3.3",
+    "@nuxtjs/tailwindcss": "^6.12.0",
+    "firebase": "^10.13.1",
+    "flatpickr": "^4.6.13",
+    "hammerjs": "^2.0.8",
+    "jsbarcode": "^3.11.6",
+    "nuxt": "^3.12.2",
+    "vue": "^3.4.29",
+    "vue-flatpickr-component": "^11.0.5",
+    "vue-router": "^4.3.3"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.2"
+  },
+  "description": "Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prettier": {
+    "printWidth": 100
+  }
+}
