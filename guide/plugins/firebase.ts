@@ -1,8 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import type { User } from "firebase/auth";
 const { TEST_MODE } = useConstants();
 
 let firebaseConfig = {
@@ -27,25 +26,20 @@ if (!TEST_MODE) {
 export default defineNuxtPlugin(() => {
   try {
     // appの二重起動防止
-    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const currentUser = ref<User | null>(null);
-
-    onAuthStateChanged(auth, (user) => {
-      currentUser.value = user;
-    });
+    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    const firebaseAuth = getAuth(app);
+    const firebaseDb = getFirestore(app);
+    const firebaseStorage = getStorage(app);
 
     return {
       provide: {
-        auth,
-        db,
-        storage,
-        user: currentUser,
+        firebaseAuth,
+        firebaseDb,
+        firebaseStorage,
       },
     };
   } catch (error) {
     console.error("Firebase 初期化エラー:", error);
+    return;
   }
 });
