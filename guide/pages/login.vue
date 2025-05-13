@@ -10,12 +10,22 @@
   <div class="flex justify-center items-center h-screen bg-slate-200">
     <div class="card w-[35rem] bg-base-100 shadow-xl">
       <div class="card-body text-2xl">
-        <h2 class="card-title text-4xl mb-4">入院時確認チェック管理ログイン</h2>
+        <h2 class="card-title text-4xl mb-4">患者情報登録</h2>
+        <input
+          v-model="inputData.patientNo"
+          placeholder="患者ID"
+          type="text"
+          class="input input-bordered w-full mb-4 text-2xl"
+          @input="checkInput"
+          maxlength="8"
+        />
+        <div class="mb-2 overflow-wrap max-w-[30rem]">患者氏名： {{ name }}</div>
+        <div class="overflow-wrap max-w-[30rem]">コース名： {{ course }}</div>
         <form @submit.prevent="handleLogin" class="mt-4">
           <!-- ユーザID -->
           <label class="input input-bordered flex items-center justify-between gap-2 mb-5 w-full">
             <input v-model="inputData.userId" type="text" placeholder="ID" @input="onInputChange('userId')" />
-            <CommonClearIcon :isVisible="inputFlag.userId" clickEvent="userId" @click="onClickClear" />
+            <CommonClearIcon :isVisible="inputFlag.userId" @click="onClickClear('userId')" />
           </label>
           <!-- パスワード -->
           <label class="input input-bordered flex items-center justify-between mb-5 w-full">
@@ -26,7 +36,7 @@
               @input="onInputChange('password')"
             />
             <div class="flex items-center ml-auto">
-              <CommonClearIcon :isVisible="inputFlag.password" clickEvent="password" @click="onClickClear" />
+              <CommonClearIcon :isVisible="inputFlag.password" @click="onClickClear('password')" />
               <CommonPassVisible v-model="isPassVisible" />
             </div>
           </label>
@@ -42,9 +52,20 @@ definePageMeta({
   middleware: "auth",
 });
 import { signInWithEmailAndPassword } from "firebase/auth";
-import type { LoginData, LoginFlag } from "../types/loginType";
+// 型定義
+import type { ExLoginData, ExLoginFlag } from "../types/baseType";
 import type { ToastProps } from "../types/toastType";
-const { COOKIE_SETTING } = useConstants();
+// 定数読込
+const { MSG, COOKIE_SETTING } = useConstants();
+const addMailAddress = "@holonicsystem.com";
+
+// composable
+const { formatDateToString } = useCommon();
+
+// cookie
+const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
+const cookieToday = useCookie<string>("today", COOKIE_SETTING);
+const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
 
 // pluginの読込
 const { $firebaseAuth } = useNuxtApp();
@@ -57,19 +78,23 @@ const isLoading = ref(false);
 const toastVisible = ref(false);
 const toastPops = ref<ToastProps>({ message: "" });
 
-const inputData = reactive<LoginData>({
+// 入力データ
+const inputData = reactive<ExLoginData>({
   userId: "",
   password: "",
+  patientNo: "",
 });
-const inputFlag = reactive<LoginFlag>({
+const inputFlag = reactive<ExLoginFlag>({
   userId: false,
   password: false,
+  patientNo: false,
 });
+// reactive変数
+const name = ref<string>("");
+const course = ref<string>("");
 
-const addMailAddress = "@holonicsystem.com";
-
-const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
-const { MSG } = useConstants();
+// 初期データ取得
+cookieToday.value = formatDateToString(new Date());
 
 const handleLogin = async () => {
   try {
@@ -92,11 +117,31 @@ const handleLogin = async () => {
   }
 };
 
+const checkInput = async () => {
+  if (inputData.patientNo.length === 8) {
+    isLoading.value = true;
+    // 00006378
+    const { data, error } = await useFirestoreDocument(String(cookieToday.value), "00" + inputData.patientNo);
+    if (error.value != null) {
+      toastPops.value = {
+        message: error.value,
+        type: "error",
+        vPos: "middle",
+        hPos: "center",
+      };
+      toastVisible.value = true;
+    } else {
+      console.log(data.value);
+    }
+    isLoading.value = false;
+  }
+};
+
 // 入力系method start
-const onInputChange = (field: keyof LoginData) => {
+const onInputChange = (field: keyof ExLoginData) => {
   inputFlag[field] = inputData[field] !== "";
 };
-const onClickClear = (field: keyof LoginData) => {
+const onClickClear = (field: keyof ExLoginData) => {
   inputData[field] = "";
   onInputChange(field);
 };

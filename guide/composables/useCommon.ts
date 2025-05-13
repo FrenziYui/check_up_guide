@@ -53,11 +53,25 @@ export const useCommon = () => {
         return name;
     }
   };
+  // エラーメッセージに追加情報を付加する
+  const getErrorMessage = (message: string, details: string = ""): string => {
+    return message.replace("{{DETAILS}}", details ? `(${details})` : "");
+  };
+  // 日付をyyyymmddの形に
+  const formatDateToString = (date: Date): string => {
+    const localDate = new Date(date);
+    const year = localDate.getFullYear();
+    const month = (localDate.getMonth() + 1).toString().padStart(2, "0"); // 月は0から始まるので +1
+    const day = localDate.getDate().toString().padStart(2, "0"); // 日付のゼロ埋め
+    return `${year}${month}${day}`;
+  };
 
   return {
     DateToString,
     stringToDate,
     convertDate,
     convertHonorific,
+    getErrorMessage,
+    formatDateToString,
   };
 };

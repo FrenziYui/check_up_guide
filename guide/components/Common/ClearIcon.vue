@@ -1,14 +1,11 @@
 <template>
-  <img v-if="isVisible" @click="handleClick" src="/icon/close.svg" :alt="alt" :class="computedClass" />
+  <img v-if="isVisible" src="/icon/close.svg" :alt="alt" :class="computedClass" @click="emit('click')" />
 </template>
 
 <script lang="ts" setup>
-import type { InputData } from "../../types/baseType";
-
 interface Props {
   isVisible: boolean;
   alt?: string;
-  clickEvent: keyof InputData;
   customClass?: string;
 }
 
@@ -21,9 +18,5 @@ const computedClass = computed(() => {
   return props.customClass ? props.customClass : defaultClass;
 });
 
-const emit = defineEmits<{ (e: "click", event: keyof InputData): void }>();
-
-const handleClick = () => {
-  emit("click", props.clickEvent);
-};
+const emit = defineEmits<{ (e: "click"): void }>();
 </script>
