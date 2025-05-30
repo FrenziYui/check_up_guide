@@ -11,14 +11,16 @@
     <div class="card w-[35rem] bg-base-100 shadow-xl">
       <div class="card-body text-2xl">
         <h2 class="card-title text-4xl mb-4">患者情報登録</h2>
-        <input
-          v-model="inputData.patientNo"
-          placeholder="患者ID"
-          type="text"
-          class="input input-bordered w-full mb-4 text-2xl"
-          @input="checkInput"
-          maxlength="8"
-        />
+        <label class="input input-bordered flex items-center justify-between gap-2 mb-5 w-full">
+          <input
+            v-model="inputData.userId"
+            type="text"
+            maxlength="8"
+            placeholder="患者ID"
+            @input="onInputChange('patientNo')"
+          />
+          <CommonClearIcon :isVisible="inputFlag.userId" @click="onClickClear('userId')" />
+        </label>
         <div class="mb-2 overflow-wrap max-w-[30rem]">患者氏名： {{ name }}</div>
         <div class="overflow-wrap max-w-[30rem]">コース名： {{ course }}</div>
         <form @submit.prevent="handleLogin" class="mt-4">

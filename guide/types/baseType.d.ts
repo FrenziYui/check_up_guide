@@ -1,5 +1,6 @@
 import type { LoginData, LoginFlag } from "../types/loginType";
 
+// ログイン情報(基本に患者IDを追加)
 export interface ExLoginData extends LoginData {
   patientNo: string;
 }
