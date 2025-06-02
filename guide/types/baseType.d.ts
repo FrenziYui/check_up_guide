@@ -9,6 +9,11 @@ export interface ExLoginFlag extends LoginFlag {
   patientNo: boolean;
 }
 
+export interface PatientData {
+  name: string;
+  courseNm: string;
+}
+
 // interface Detail {
 //   comment: string;
 //   date: string;

@@ -1,22 +1,4 @@
 <template>
-  <header class="bg-secondary text-white p-1 flex justify-between items-center">
-    <!-- 左側 -->
-    <div class="flex items-center space-x-3">
-      <div class="drawer-content">
-        <label @click="searchtoggle" for="my-drawer" class="cursor-pointer">
-          <img src="/icon/burger.svg" alt="menu" class="w-8 h-8" />
-        </label>
-      </div>
-    </div>
-    <!-- 中央 -->
-    <div class="flex-1 text-center text-2xl font-semibold whitespace-nowrap truncate max-w-xs">
-      <span>入院時確認チェック管理画面aaaa</span>
-    </div>
-    <!-- 右側 -->
-    <button class="btn btn-ghost flex items-center space-x-2" @click="handleLogout">
-      <img src="/icon/logout.svg" alt="logout" class="w-6 h-6" />
-    </button>
-  </header>
   <!-- ログアウト確認ボタン -->
   <CommonConfModal
     v-model:isOpen="showModalLogout"
@@ -24,14 +6,43 @@
     message="ログアウトしログイン画面に移動しますがよろしいですか？"
     @confirm="handleConfirmLogout"
   />
+  <header class="iseikai-color text-white px-6 flex items-center">
+    <!-- 左側 -->
+    <div class="w-2/12 flex items-center"></div>
+
+    <!-- 中央 -->
+    <div class="w-8/12 flex-1 flex justify-center">
+      <h1 class="text-3xl font-bold text-center">
+        {{ title }}
+      </h1>
+    </div>
+
+    <!-- 右側 -->
+    <div class="w-2/12 flex items-center gap-6 justify-end">
+      <LangageCng @langage-sent="langageValueSent" />
+      <img src="/icon/logout.svg" alt="logout" class="w-8 h-8" @click="handleLogout" />
+    </div>
+  </header>
 </template>
 
 <script setup lang="ts">
 import { signOut } from "firebase/auth";
 const { COOKIE_SETTING } = useConstants();
 const { $firebaseAuth } = useNuxtApp();
+// 型
+interface Emits {
+  (event: "langage-sent", langage: string): void;
+}
+// cookie
 const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
-const emit = defineEmits(["searchtoggle", "searchClicked"]);
+// props
+defineProps<{
+  title: string;
+}>();
+// emit
+const emit = defineEmits<Emits>();
+
+// 表示切替用
 const showModalLogout = ref(false);
 
 onMounted(() => {
@@ -40,14 +51,9 @@ onMounted(() => {
   }
 });
 
-const searchtoggle = () => {
-  emit("searchtoggle");
-};
-
 // ログアウトボタンが押下された場合ダイアログを開く
 const handleLogout = () => {
   showModalLogout.value = true;
-  console.log("aaaa");
 };
 
 // ログアウトOKの場合
@@ -57,7 +63,12 @@ const handleConfirmLogout = async () => {
   navigateTo("/login");
 };
 
-const handleSearch = () => {
-  emit("searchClicked");
+const langageValueSent = (val: string) => {
+  emit("langage-sent", val);
 };
 </script>
+<style>
+.iseikai-color {
+  background-color: #00a1e5;
+}
+</style>

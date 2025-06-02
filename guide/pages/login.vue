@@ -13,13 +13,13 @@
         <h2 class="card-title text-4xl mb-4">患者情報登録</h2>
         <label class="input input-bordered flex items-center justify-between gap-2 mb-5 w-full">
           <input
-            v-model="inputData.userId"
+            v-model="inputData.patientNo"
             type="text"
-            maxlength="8"
+            :maxlength="PATIENT_LENGTH"
             placeholder="患者ID"
             @input="onInputChange('patientNo')"
           />
-          <CommonClearIcon :isVisible="inputFlag.userId" @click="onClickClear('userId')" />
+          <CommonClearIcon :isVisible="inputFlag.patientNo" @click="onClickClear('patientNo')" />
         </label>
         <div class="mb-2 overflow-wrap max-w-[30rem]">患者氏名： {{ name }}</div>
         <div class="overflow-wrap max-w-[30rem]">コース名： {{ course }}</div>
@@ -55,10 +55,10 @@ definePageMeta({
 });
 import { signInWithEmailAndPassword } from "firebase/auth";
 // 型定義
-import type { ExLoginData, ExLoginFlag } from "../types/baseType";
+import type { ExLoginData, ExLoginFlag, PatientData } from "../types/baseType";
 import type { ToastProps } from "../types/toastType";
 // 定数読込
-const { MSG, COOKIE_SETTING } = useConstants();
+const { MSG, COOKIE_SETTING, PATIENT_LENGTH } = useConstants();
 const addMailAddress = "@holonicsystem.com";
 
 // composable
@@ -102,6 +102,7 @@ const handleLogin = async () => {
   try {
     isLoading.value = true;
     cookieUserId.value = inputData.userId;
+    cookiePatient.value = inputData.patientNo;
 
     const email = inputData.userId + addMailAddress;
     await signInWithEmailAndPassword($firebaseAuth, email, inputData.password);
@@ -120,28 +121,37 @@ const handleLogin = async () => {
 };
 
 const checkInput = async () => {
-  if (inputData.patientNo.length === 8) {
+  if (inputData.patientNo.length === PATIENT_LENGTH) {
     isLoading.value = true;
-    // 00006378
-    const { data, error } = await useFirestoreDocument(String(cookieToday.value), "00" + inputData.patientNo);
-    if (error.value != null) {
+    const { data, error } = await useFirestoreDocument<PatientData>(
+      String(cookieToday.value),
+      "00" + inputData.patientNo
+    );
+    if (error.value != null || data.value == null) {
       toastPops.value = {
-        message: error.value,
+        message: error.value ?? "データがありません",
         type: "error",
         vPos: "middle",
         hPos: "center",
       };
       toastVisible.value = true;
     } else {
-      console.log(data.value);
+      name.value = data.value.name;
+      course.value = data.value.courseNm;
     }
     isLoading.value = false;
+  } else {
+    name.value = "";
+    course.value = "";
   }
 };
 
 // 入力系method start
 const onInputChange = (field: keyof ExLoginData) => {
   inputFlag[field] = inputData[field] !== "";
+  if (field == "patientNo") {
+    checkInput();
+  }
 };
 const onClickClear = (field: keyof ExLoginData) => {
   inputData[field] = "";
