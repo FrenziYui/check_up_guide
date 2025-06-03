@@ -11,14 +11,12 @@
   </details>
 </template>
 <script setup lang="ts">
-// emit定義 start
-interface Emits {
-  (event: "langage-sent", langage: string): void;
-}
-const emit = defineEmits<Emits>();
+import type { LangKey } from "../types/langType";
+
+const emit = defineEmits<{ (event: "langage-sent", langage: LangKey): void }>();
 // emit定義 end
 const showMenu = ref<HTMLDetailsElement | null>(null);
-const toggleLanguage = (val: string) => {
+const toggleLanguage = (val: LangKey) => {
   emit("langage-sent", val);
   if (showMenu.value) {
     showMenu.value.removeAttribute("open");

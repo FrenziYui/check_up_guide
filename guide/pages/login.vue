@@ -53,10 +53,13 @@
 definePageMeta({
   middleware: "auth",
 });
+// import
 import { signInWithEmailAndPassword } from "firebase/auth";
+
 // 型定義
 import type { ExLoginData, ExLoginFlag, PatientData } from "../types/baseType";
 import type { ToastProps } from "../types/toastType";
+
 // 定数読込
 const { MSG, COOKIE_SETTING, PATIENT_LENGTH } = useConstants();
 const addMailAddress = "@holonicsystem.com";
@@ -68,8 +71,9 @@ const { formatDateToString } = useCommon();
 const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
 const cookieToday = useCookie<string>("today", COOKIE_SETTING);
 const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
+const cookieLang = useCookie<string>("lang", COOKIE_SETTING);
 
-// pluginの読込
+// plugin
 const { $firebaseAuth } = useNuxtApp();
 
 // 表示制御
@@ -95,8 +99,10 @@ const inputFlag = reactive<ExLoginFlag>({
 const name = ref<string>("");
 const course = ref<string>("");
 
-// 初期データ取得
-cookieToday.value = formatDateToString(new Date());
+onMounted(async () => {
+  cookieToday.value = formatDateToString(new Date());
+  cookieLang.value = "ja";
+});
 
 const handleLogin = async () => {
   try {
@@ -129,7 +135,7 @@ const checkInput = async () => {
     );
     if (error.value != null || data.value == null) {
       toastPops.value = {
-        message: error.value ?? "データがありません",
+        message: MSG.EA00,
         type: "error",
         vPos: "middle",
         hPos: "center",

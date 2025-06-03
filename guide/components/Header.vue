@@ -26,13 +26,10 @@
 </template>
 
 <script setup lang="ts">
+import type { LangKey } from "../types/langType";
 import { signOut } from "firebase/auth";
 const { COOKIE_SETTING } = useConstants();
 const { $firebaseAuth } = useNuxtApp();
-// 型
-interface Emits {
-  (event: "langage-sent", langage: string): void;
-}
 // cookie
 const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
 // props
@@ -40,7 +37,7 @@ defineProps<{
   title: string;
 }>();
 // emit
-const emit = defineEmits<Emits>();
+const emit = defineEmits<{ (event: "langage-sent", langage: LangKey): void }>();
 
 // 表示切替用
 const showModalLogout = ref(false);
@@ -63,7 +60,7 @@ const handleConfirmLogout = async () => {
   navigateTo("/login");
 };
 
-const langageValueSent = (val: string) => {
+const langageValueSent = (val: LangKey) => {
   emit("langage-sent", val);
 };
 </script>

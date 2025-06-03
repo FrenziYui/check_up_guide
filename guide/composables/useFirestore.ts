@@ -56,7 +56,7 @@ export const useFirestoreSnapshot = <T>(
         data.value = docSnap.data() as UnwrapRef<T>;
       } else {
         data.value = null;
-        error.value = MSG.EA00;
+        error.value = MSG.E002;
       }
     },
     (err) => {

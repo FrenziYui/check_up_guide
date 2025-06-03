@@ -9,9 +9,40 @@ export interface ExLoginFlag extends LoginFlag {
   patientNo: boolean;
 }
 
-export interface PatientData {
+export interface DispCdItem {
+  dspOrder: number;
+  inpCd: string;
   name: string;
+  status: string;
+  type: string;
+}
+
+export interface HeadItem {
   courseNm: string;
+}
+
+export interface PersonalItem {
+  birthDate: string;
+  kana: string;
+  name: string;
+  patientId: string;
+  sex: string;
+}
+
+export interface PatientData extends HeadItem, PersonalItem {
+  dispCd: DispCdItem[];
+  physical: string | null;
+  pregnant: string | null;
+  upd_ymd_hms: string;
+  yy_no: number;
+  js_cd: string;
+}
+
+export interface InvestigationData {
+  Status: string;
+  InpCd: string;
+  Active: boolean;
+  DispName: string;
 }
 
 // interface Detail {
