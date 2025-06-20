@@ -1,20 +1,18 @@
 <template>
   <!-- 名前等エリア -->
-  <div class="h-44 m-2 mt-3 border rounded-xl border-gray-400 flex overflow-hidden">
+  <div class="h-40 m-2 mt-3 border rounded-xl border-gray-400 flex overflow-hidden">
     <!-- 左側のコンテンツ -->
     <div class="w-[69%] flex flex-col justify-center">
-      <div class="ml-3 mb-2 text-3xl flex items-center">
+      <div class="ml-3 mb-2 leading-none text-2xl flex items-center">
         <span>ID:{{ data.patientId }}</span>
         <span class="ml-5">性別:{{ data.sex }}</span>
       </div>
-      <div class="ml-3 mb-2 text-3xl flex items-center">
+      <div class="ml-3 mb-2 leading-none text-2xl flex items-center">
         <span>生年月日: {{ data.birthDate }}</span>
       </div>
-      <div class="ml-3 overflow-hidden whitespace-nowrap text-ellipsis">
-        <ruby class="text-5xl">
-          {{ data.name }} 様
-          <rt> {{ data.kana }} サマ </rt>
-        </ruby>
+      <div class="ml-3 mt-3 leading-none overflow-hidden whitespace-nowrap text-ellipsis">
+        <div class="text-xl">{{ data.kana }} サマ</div>
+        <div class="text-3xl">{{ data.name }} 様</div>
       </div>
     </div>
 

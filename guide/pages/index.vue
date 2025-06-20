@@ -12,8 +12,13 @@
     <Header :title="refHeadData.courseNm" @langage-sent="langageValueSent" />
     <Personal :data="refPersonalData" />
     <Examination :items="refDispData" :langDt="langDt" />
+    <NextExam />
+    <button
+      class="btn bg-secondary text-secondary-foreground w-32 h-32 rounded-2xl text-xl text-center break-words whitespace-normal flex items-center justify-center p-2"
+    >
+      尿検査
+    </button>
   </div>
-  {{ langDt?.i0101 }}
 </template>
 <script setup lang="ts">
 definePageMeta({

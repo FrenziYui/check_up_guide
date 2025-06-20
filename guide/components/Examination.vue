@@ -1,5 +1,5 @@
 <template>
-  <div :class="['flex-none p-6 overflow-y-auto', false ? 'h-[16rem]' : 'h-[22rem]']">
+  <div :class="['flex-none p-6 overflow-y-auto', false ? 'h-[16rem]' : 'h-[20rem]']">
     <div class="flex flex-wrap gap-4">
       <div
         v-if="langDt"
