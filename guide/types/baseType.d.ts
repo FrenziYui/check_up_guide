@@ -29,10 +29,15 @@ export interface PersonalItem {
   sex: string;
 }
 
+export interface StoolUrine {
+  birthDate: string;
+}
+
 export interface PatientData extends HeadItem, PersonalItem {
   dispCd: DispCdItem[];
   physical: string | null;
   pregnant: string | null;
+  urine: StoolUrine | null;
   upd_ymd_hms: string;
   yy_no: number;
   js_cd: string;

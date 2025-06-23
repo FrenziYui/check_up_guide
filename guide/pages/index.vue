@@ -13,11 +13,9 @@
     <Personal :data="refPersonalData" />
     <Examination :items="refDispData" :langDt="langDt" />
     <NextExam />
-    <button
-      class="btn bg-secondary text-secondary-foreground w-32 h-32 rounded-2xl text-xl text-center break-words whitespace-normal flex items-center justify-center p-2"
-    >
-      尿検査
-    </button>
+    <div class="pl-5 pt-2 pr-5">
+      <StatusGrid />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -44,6 +42,9 @@ const { MSG, COOKIE_SETTING } = useConstants();
 const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
 const cookieToday = useCookie<string>("today", COOKIE_SETTING);
 const cookielang = useCookie<LangKey>("lang", COOKIE_SETTING);
+
+// state
+const headTitle = useState("headTitle");
 
 if (!cookiePatient.value || !cookieToday.value) {
   await signOut($firebaseAuth);
@@ -125,6 +126,7 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.birthDate = formatDateToJapanese(newData.birthDate);
   refPersonalData.value.sex = getGenderLabel(newData.sex);
   refDispData.value = newData.dispCd;
+  headTitle.value = refHeadData.value.courseNm;
 };
 const langGet = async () => {
   try {

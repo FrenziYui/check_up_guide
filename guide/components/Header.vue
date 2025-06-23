@@ -19,8 +19,8 @@
 
     <!-- 右側 -->
     <div class="w-2/12 flex items-center gap-6 justify-end">
-      <LangageCng @langage-sent="langageValueSent" />
-      <img src="/icon/logout.svg" alt="logout" class="w-8 h-8" @click="handleLogout" />
+      <LangageCng v-if="showLangChange !== false" @langage-sent="langageValueSent" />
+      <img v-if="showLangChange !== false" src="/icon/logout.svg" alt="logout" class="w-8 h-8" @click="handleLogout" />
     </div>
   </header>
 </template>
@@ -33,9 +33,15 @@ const { $firebaseAuth } = useNuxtApp();
 // cookie
 const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
 // props
-defineProps<{
-  title: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    showLangChange?: boolean;
+  }>(),
+  {
+    showLangChange: true,
+  }
+);
 // emit
 const emit = defineEmits<{ (event: "langage-sent", langage: LangKey): void }>();
 

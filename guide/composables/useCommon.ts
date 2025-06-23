@@ -31,6 +31,11 @@ export const useCommon = () => {
     return "不明";
   };
 
+  // エラーメッセージに追加情報を付加する
+  const getErrorMessage = (message: string, details: string = ""): string => {
+    return message.replace("{{DETAILS}}", details ? `(${details})` : "");
+  };
+
   const DateToString = (date: Date): string => {
     const localDate = new Date(date);
     const year = localDate.getFullYear();
@@ -85,15 +90,12 @@ export const useCommon = () => {
         return name;
     }
   };
-  // エラーメッセージに追加情報を付加する
-  const getErrorMessage = (message: string, details: string = ""): string => {
-    return message.replace("{{DETAILS}}", details ? `(${details})` : "");
-  };
 
   return {
     setDataField,
     formatDateToString,
     formatDateToJapanese,
     getGenderLabel,
+    getErrorMessage,
   };
 };
