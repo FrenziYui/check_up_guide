@@ -35,10 +35,11 @@ const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
 // props
 const props = withDefaults(
   defineProps<{
-    title: string;
+    title?: string;
     showLangChange?: boolean;
   }>(),
   {
+    title: "",
     showLangChange: true,
   }
 );

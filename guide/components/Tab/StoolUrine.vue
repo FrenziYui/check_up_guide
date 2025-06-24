@@ -1,21 +1,19 @@
 <template>
-  <CommonToastMessage
-    v-model="toastVisible"
-    :message="toastPops.message"
-    :type="toastPops.type"
-    :vPos="toastPops.vPos"
-    :hPos="toastPops.hPos"
-  />
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitForm" v-if="result">
     <!-- 入力フォーム -->
-    <div class="form-control border border-accent p-4 rounded-lg">
-      <QuestionRadio label="便検査１回目" :options="['受領済', '後日郵送', '後日持参']" v-model="検査結果便1" />
-    </div>
-    <div class="form-control border border-accent p-4 rounded-lg mt-5">
-      <QuestionRadio label="便検査２回目" :options="['受領済', '後日郵送', '後日持参']" v-model="検査結果便2" />
-    </div>
-    <div class="form-control border border-accent p-4 rounded-lg mt-5">
-      <QuestionRadio label="尿検査" :options="['受領済', '後日郵送', '後日持参']" v-model="検査結果尿" />
+    <div class="max-h-[80vh] overflow-y-auto p-4">
+      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg">
+        <QuestionRadio label="便検査１回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool1" />
+      </div>
+      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
+        <QuestionRadio label="便検査２回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool2" />
+      </div>
+      <div v-if="result.UrineVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
+        <QuestionRadio label="尿検査" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Urine1" />
+      </div>
+      <div class="form-control border border-accent p-4 rounded-lg mt-5">
+        <QuestionTextarea label="備考" v-model="result.Biko" :maxLength="100" />
+      </div>
     </div>
     <!-- ボタン -->
     <div class="modal-action mt-6 flex justify-end space-x-2">
@@ -26,45 +24,36 @@
 </template>
 
 <script setup lang="ts">
-import type { ToastProps } from "~/types/toastType";
-import type { PatientData, StoolUrine } from "~/types/baseType";
-// Toast表示用
-const toastVisible = ref(false);
-const toastPops = ref<ToastProps>({ message: "" });
-const results = ref<StoolUrine>();
+// 型
+import type { StoolUrine } from "~/types/baseType";
+// reactiveデータ
+const result = ref<StoolUrine>();
+// props
+const props = defineProps<{
+  data: StoolUrine;
+}>();
+// emits
+const emit = defineEmits<{
+  (e: "update:data", value: StoolUrine): void;
+}>();
 
-const 検査結果便1 = ref("");
-const 検査結果便2 = ref("");
-const 検査結果尿 = ref("");
-
-// 定数
-const { MSG, COOKIE_SETTING } = useConstants();
-
-const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
-const cookieToday = useCookie<string>("today", COOKIE_SETTING);
-
-onMounted(async () => {
-  const { data, error } = await useFirestoreDocument<PatientData>(
-    cookieToday.value.toString(),
-    "00" + cookiePatient.value
-  );
-  if (error.value) {
-    toastPops.value = {
-      message: MSG.EA01,
-      type: "error",
-      vPos: "middle",
-      hPos: "center",
-    };
-    toastVisible.value = true;
-    setTimeout(() => {
-      navigateTo("/");
-    }, 3000);
-  }
-  if (data.value?.urine != null) {
-    results.value = data.value.urine;
-  }
-});
 const close = () => {
   navigateTo("/");
 };
+
+const submitForm = () => {
+  if (result.value) {
+    emit("update:data", result.value);
+  }
+};
+
+watch(
+  () => props.data,
+  (newVal) => {
+    if (newVal) {
+      result.value = { ...newVal };
+    }
+  },
+  { immediate: true, deep: true }
+);
 </script>

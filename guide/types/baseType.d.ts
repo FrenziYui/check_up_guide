@@ -30,7 +30,20 @@ export interface PersonalItem {
 }
 
 export interface StoolUrine {
-  birthDate: string;
+  StoolVisible: boolean;
+  Stool1: string;
+  Stool2: string;
+  UrineVisible: boolean;
+  Urine1: string;
+  Biko: string;
+}
+export interface ChkJimu {
+  StoolVisible: boolean;
+  Stool1: string;
+  Stool2: string;
+  UrineVisible: boolean;
+  Urine1: string;
+  Biko: string;
 }
 
 export interface PatientData extends HeadItem, PersonalItem {

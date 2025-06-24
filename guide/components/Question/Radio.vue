@@ -7,7 +7,7 @@
           type="radio"
           class="radio radio-success"
           :value="option"
-          :checked="localValue === option"
+          :checked="proxyValue === option"
           @click="handleClick(option)"
         />
         <span>{{ option }}</span>
@@ -25,17 +25,20 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(["update:modelValue"]);
 
-const localValue = ref(props.modelValue);
-watch(localValue, (val) => emit("update:modelValue", val));
+// 値の取得&更新
+const proxyValue = computed({
+  get: () => props.modelValue ?? "",
+  set: (val) => emit("update:modelValue", val),
+});
 
 // ★ クリック時のカスタム処理
 const handleClick = (option: string) => {
-  if (localValue.value === option) {
+  if (proxyValue.value === option) {
     // 同じの押したらクリア
-    localValue.value = "";
+    proxyValue.value = "";
   } else {
     // 違うの押したら選択
-    localValue.value = option;
+    proxyValue.value = option;
   }
 };
 </script>

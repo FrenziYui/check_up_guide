@@ -8,6 +8,7 @@
         class="w-[calc(50%-0.5rem)]"
       >
         <InvestigationBtn
+          v-if="item.type == 'i'"
           :investigationData="{
             InpCd: item.inpCd,
             DispName: langDt[item.inpCd] || item.name,

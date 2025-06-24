@@ -44,7 +44,6 @@ const cookieToday = useCookie<string>("today", COOKIE_SETTING);
 const cookielang = useCookie<LangKey>("lang", COOKIE_SETTING);
 
 // state
-const headTitle = useState("headTitle");
 
 if (!cookiePatient.value || !cookieToday.value) {
   await signOut($firebaseAuth);
@@ -126,7 +125,6 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.birthDate = formatDateToJapanese(newData.birthDate);
   refPersonalData.value.sex = getGenderLabel(newData.sex);
   refDispData.value = newData.dispCd;
-  headTitle.value = refHeadData.value.courseNm;
 };
 const langGet = async () => {
   try {
