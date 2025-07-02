@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const items = [
-  { label: "パニック値", status: 9, param: "panic", visible: true },
+  { label: "パニック値", status: 8, param: "panic", visible: false },
   { label: "尿/便検査", status: 0, param: "urine", visible: true },
   { label: "事務", status: 0, param: "checkjim", visible: true },
   { label: "問診票", status: 0, param: "checkmon", visible: true },

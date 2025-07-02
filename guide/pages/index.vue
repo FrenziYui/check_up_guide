@@ -16,6 +16,7 @@
     <div class="pl-5 pt-2 pr-5">
       <StatusGrid />
     </div>
+    <Memo :items="refDispData"  />
   </div>
 </template>
 <script setup lang="ts">
@@ -64,6 +65,8 @@ const refDispData = ref<DispCdItem[]>([
     inpCd: "",
     name: "",
     status: "",
+    knsnm: "",
+    knstm: "",
     type: "",
   },
 ]);

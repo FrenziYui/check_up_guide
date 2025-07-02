@@ -14,6 +14,8 @@ export interface DispCdItem {
   inpCd: string;
   name: string;
   status: string;
+  knstm: string;
+  knsnm: string;
   type: string;
 }
 
