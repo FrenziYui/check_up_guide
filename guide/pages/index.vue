@@ -12,11 +12,11 @@
     <Header :title="refHeadData.courseNm" @langage-sent="langageValueSent" />
     <Personal :data="refPersonalData" />
     <Examination :items="refDispData" :langDt="langDt" />
-    <NextExam />
+    <NextExam :item="refnextData" :langDt="langDt" />
     <div class="pl-5 pt-2 pr-5">
       <StatusGrid />
     </div>
-    <Memo :items="refDispData"  />
+    <Memo :items="refDispData" />
   </div>
 </template>
 <script setup lang="ts">
@@ -29,9 +29,9 @@ import { signOut } from "firebase/auth";
 const { setDataField, formatDateToJapanese, getGenderLabel } = useCommon();
 
 // 型
-import type { PatientData, HeadItem, PersonalItem, DispCdItem } from "../types/baseType";
-import type { AllLanguage, LangStr, LangKey } from "../types/langType";
-import type { ToastProps } from "../types/toastType";
+import type { PatientData, HeadItem, PersonalItem, DispCdItem, NextItem } from "~/types/baseType";
+import type { AllLanguage, LangStr, LangKey } from "~/types/langType";
+import type { ToastProps } from "~/types/toastType";
 
 // plugin
 const { $firebaseAuth } = useNuxtApp();
@@ -78,6 +78,8 @@ const refPersonalData = ref<PersonalItem>({
   patientId: "",
   sex: "",
 });
+const refnextData = ref<string>("");
+
 const langDt = ref<LangStr>();
 // その他変数
 let langData: AllLanguage;
@@ -128,6 +130,7 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.birthDate = formatDateToJapanese(newData.birthDate);
   refPersonalData.value.sex = getGenderLabel(newData.sex);
   refDispData.value = newData.dispCd;
+  refnextData.value = newData.active;
 };
 const langGet = async () => {
   try {

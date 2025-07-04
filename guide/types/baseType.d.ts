@@ -56,6 +56,7 @@ export interface PatientData extends HeadItem, PersonalItem {
   upd_ymd_hms: string;
   yy_no: number;
   js_cd: string;
+  active: string;
 }
 
 export interface InvestigationData {
@@ -63,6 +64,10 @@ export interface InvestigationData {
   InpCd: string;
   Active: boolean;
   DispName: string;
+}
+export interface NextItem {
+  next: string;
+  active: string;
 }
 
 // interface Detail {

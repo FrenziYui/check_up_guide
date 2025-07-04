@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  css: ["~/assets/app.css"],
+  css: ["~/assets/app.css", "swiper/css", "swiper/css/zoom", "swiper/css/navigation", "swiper/css/pagination"],
   ssr: false,
 
   app: {
