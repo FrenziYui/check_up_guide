@@ -1,0 +1,331 @@
+{
+  "0000057902": {
+    "yy_no": 69689,
+    "urine": {
+      "StoolVisible": false,
+      "Stool1": "",
+      "Stool2": "",
+      "Biko": "入力",
+      "Urine1": "受領済",
+      "UrineVisible": true
+    },
+    "upd_ymd_hms": "2025-07-04 16:00:02",
+    "patientId": "00057902",
+    "dispOrder": [
+      {
+        "inpCd": "i0101",
+        "order": 1,
+        "name": "身体計測"
+      },
+      {
+        "inpCd": "i0102",
+        "order": 2,
+        "name": "医師診察"
+      },
+      {
+        "inpCd": "i0103",
+        "order": 3,
+        "name": "視力検査"
+      },
+      {
+        "inpCd": "i0104",
+        "order": 4,
+        "name": "心電図"
+      },
+      {
+        "inpCd": "i0105",
+        "order": 5,
+        "name": "超音波検査"
+      },
+      {
+        "inpCd": "i0106",
+        "order": 6,
+        "name": "MRI/MRA検査"
+      },
+      {
+        "inpCd": "i0107",
+        "order": 7,
+        "name": "CT検査"
+      },
+      {
+        "inpCd": "i0108",
+        "order": 8,
+        "name": "X線検査"
+      },
+      {
+        "inpCd": "i0109",
+        "order": 9,
+        "name": "内視鏡検査"
+      },
+      {
+        "inpCd": "i0110",
+        "order": 99,
+        "name": "婦人科"
+      },
+      {
+        "inpCd": "i0111",
+        "order": 99,
+        "name": "胃透視"
+      },
+      {
+        "inpCd": "i0112",
+        "order": 10,
+        "name": "採血"
+      },
+      {
+        "inpCd": "i0113",
+        "order": 99,
+        "name": "PET-CT"
+      },
+      {
+        "inpCd": "i0114",
+        "order": 11,
+        "name": "肺機能"
+      },
+      {
+        "inpCd": "i9101",
+        "order": 12,
+        "name": "尿検査"
+      },
+      {
+        "inpCd": "i9102",
+        "order": 13,
+        "name": "便検査"
+      },
+      {
+        "inpCd": "i9103",
+        "order": 14,
+        "name": "胃カメラ"
+      },
+      {
+        "inpCd": "i9104",
+        "order": 99,
+        "name": "大腸カメラ"
+      }
+    ],
+    "sex": "1",
+    "dispBtn": [
+      {
+        "param": "panic",
+        "info": "0",
+        "status": 8,
+        "visible": false,
+        "label": "パニック値"
+      },
+      {
+        "param": "urine",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "尿/便検査"
+      },
+      {
+        "param": "checkjim",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "事務"
+      },
+      {
+        "param": "checkmon",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "問診票"
+      },
+      {
+        "param": "checkhkn",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "保健師"
+      },
+      {
+        "param": "checkish",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "医師"
+      },
+      {
+        "param": "other",
+        "info": "0",
+        "status": 0,
+        "visible": true,
+        "label": "その他 情報"
+      }
+    ],
+    "js_cd": "0000057902",
+    "pregnant": "アートメイクあり→MRI可",
+    "active": "i0104",
+    "courseNm": "メンズプレミアムコース（協会）",
+    "name": "患者0000057902",
+    "birthDate": "19840713",
+    "dispCd": [
+      {
+        "knsnm": "",
+        "inpCd": "i0101",
+        "type": "i",
+        "dspOrder": 10,
+        "knstm": "",
+        "status": "1",
+        "name": "身体計測"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0102",
+        "type": "i",
+        "dspOrder": 20,
+        "knstm": "",
+        "status": "A",
+        "name": "医師診察"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0103",
+        "type": "i",
+        "dspOrder": 30,
+        "knstm": "",
+        "status": "1",
+        "name": "視力検査"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0104",
+        "type": "i",
+        "dspOrder": 40,
+        "knstm": "",
+        "status": "A",
+        "name": "心電図"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0105",
+        "type": "i",
+        "dspOrder": 50,
+        "knstm": "",
+        "status": "A",
+        "name": "超音波検査"
+      },
+      {
+        "knsnm": "頚部ＭＲＡ検査、頚部ＭＲＩ検査、頭部ＭＲＡ検査、頭部ＭＲＩ検査",
+        "inpCd": "i0106",
+        "type": "i",
+        "dspOrder": 50,
+        "knstm": "【MRI】8:40",
+        "status": "A",
+        "name": "MRI/MRA検査"
+      },
+      {
+        "knsnm": "胸・腹・心臓ＣＴ検査",
+        "inpCd": "i0107",
+        "type": "i",
+        "dspOrder": 60,
+        "knstm": "9:00",
+        "status": "A",
+        "name": "CT検査"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0108",
+        "type": "i",
+        "dspOrder": 70,
+        "knstm": "",
+        "status": "A",
+        "name": "X線検査"
+      },
+      {
+        "knsnm": "胃部内視鏡検査",
+        "inpCd": "i0109",
+        "type": "i",
+        "dspOrder": 80,
+        "knstm": "10:20",
+        "status": "A",
+        "name": "内視鏡検査"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0110",
+        "type": "i",
+        "dspOrder": 90,
+        "knstm": "",
+        "status": "X",
+        "name": "婦人科"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0111",
+        "type": "i",
+        "dspOrder": 100,
+        "knstm": "",
+        "status": "X",
+        "name": "胃透視"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0112",
+        "type": "i",
+        "dspOrder": 110,
+        "knstm": "",
+        "status": "A",
+        "name": "採血"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0113",
+        "type": "i",
+        "dspOrder": 120,
+        "knstm": "",
+        "status": "X",
+        "name": "PET-CT"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i0114",
+        "type": "i",
+        "dspOrder": 130,
+        "knstm": "",
+        "status": "1",
+        "name": "肺機能"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i9101",
+        "type": "z",
+        "dspOrder": 900,
+        "knstm": "",
+        "status": "A",
+        "name": "尿検査"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i9102",
+        "type": "z",
+        "dspOrder": 910,
+        "knstm": "",
+        "status": "X",
+        "name": "便検査"
+      },
+      {
+        "knsnm": "胃部内視鏡検査",
+        "inpCd": "i9103",
+        "type": "z",
+        "dspOrder": 920,
+        "knstm": "10:20",
+        "status": "A",
+        "name": "胃カメラ"
+      },
+      {
+        "knsnm": "",
+        "inpCd": "i9104",
+        "type": "z",
+        "dspOrder": 930,
+        "knstm": "",
+        "status": "X",
+        "name": "大腸カメラ"
+      }
+    ],
+    "kana": "カンジャ0000057902",
+    "physical": null
+  }
+}
