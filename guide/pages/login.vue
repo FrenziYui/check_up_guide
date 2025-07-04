@@ -85,11 +85,18 @@ const toastVisible = ref(false);
 const toastPops = ref<ToastProps>({ message: "" });
 
 // 入力データ
+// test start
 const inputData = reactive<ExLoginData>({
-  userId: "",
-  password: "",
-  patientNo: "",
+  userId: "test",
+  password: "test01",
+  patientNo: "00057902",
 });
+// const inputData = reactive<ExLoginData>({
+//   userId: "",
+//   password: "",
+//   patientNo: "",
+// });
+// test end
 const inputFlag = reactive<ExLoginFlag>({
   userId: false,
   password: false,
@@ -100,7 +107,10 @@ const name = ref<string>("");
 const course = ref<string>("");
 
 onMounted(async () => {
-  cookieToday.value = formatDateToString(new Date());
+  // test start
+  cookieToday.value = "20250704";
+  // cookieToday.value = formatDateToString(new Date());
+  // test end
   cookieLang.value = "ja";
 });
 

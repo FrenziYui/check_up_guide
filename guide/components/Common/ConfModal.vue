@@ -16,8 +16,8 @@
       </div>
       <div class="flex justify-end pt-2">
         <slot name="actions">
-          <button @click="confirm" class="btn btn-info">ＯＫ</button>
-          <button @click="close" class="btn btn-primary ml-5">キャンセル</button>
+          <button @click="close" class="btn btn-primary">キャンセル</button>
+          <button @click="confirm" class="btn btn-info ml-5">ＯＫ</button>
         </slot>
       </div>
     </div>

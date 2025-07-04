@@ -15,6 +15,7 @@
       MAP
     </button>
   </div>
+  <NextModal :images="imageUrls" />
 </template>
 
 <script setup lang="ts">
@@ -25,29 +26,39 @@ const props = defineProps<{
   langDt: LangStr | undefined;
 }>();
 
+const imageUrls = ref<string[]>([]);
+
 const nextMessage = ref("");
 const activeData = ref("");
 const isDisabled = ref(false);
 const nextMessageVal = "t0100";
+
 watch(
   () => [props.item, props.langDt],
-  ([newActive, newLangDt]) => {
+  async ([newActive, newLangDt]) => {
     if (
       typeof newActive === "string" &&
       typeof newLangDt === "object" &&
       newLangDt !== null &&
       newActive in newLangDt
     ) {
+      const { data, error } = await useStorageFileList("medical_guide_map", newActive + "/");
+      imageUrls.value = data.value ?? [];
       activeData.value = (newLangDt as LangStr)[newActive] || "";
       nextMessage.value = (newLangDt as LangStr)[nextMessageVal] + ":" || "";
+      isDisabled.value = imageUrls.value.length === 0;
     } else {
+      imageUrls.value = [];
       activeData.value = "";
       nextMessage.value = "";
+      isDisabled.value = true;
     }
   },
   { immediate: true }
 );
+
 const openModal = () => {
-  console.log("aaa");
+  const modal = document.getElementById("img-modal") as HTMLInputElement;
+  if (modal) modal.checked = true;
 };
 </script>
