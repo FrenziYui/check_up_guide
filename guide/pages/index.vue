@@ -9,12 +9,12 @@
   />
 
   <div class="flex flex-col h-screen">
-    <Header :title="refHeadData.courseNm" @langage-sent="langageValueSent" />
+    <Header :title="refHeadData.courseNm" @langage-sent="languageValueSent" />
     <Personal :data="refPersonalData" />
     <Examination :items="refDispData" :langDt="langDt" />
     <NextExam :item="refnextData" :langDt="langDt" />
     <div class="pl-5 pt-2 pr-5">
-      <StatusGrid />
+      <StatusGrid :items="refDispBtn" />
     </div>
     <Memo :items="refDispData" />
   </div>
@@ -29,7 +29,7 @@ import { signOut } from "firebase/auth";
 const { setDataField, formatDateToJapanese, getGenderLabel } = useCommon();
 
 // 型
-import type { PatientData, HeadItem, PersonalItem, DispCdItem, NextItem } from "~/types/baseType";
+import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem } from "~/types/baseType";
 import type { AllLanguage, LangStr, LangKey } from "~/types/langType";
 import type { ToastProps } from "~/types/toastType";
 
@@ -44,8 +44,7 @@ const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
 const cookieToday = useCookie<string>("today", COOKIE_SETTING);
 const cookielang = useCookie<LangKey>("lang", COOKIE_SETTING);
 
-// state
-
+// cookieの値がない場合はログイン画面へリダイレクト
 if (!cookiePatient.value || !cookieToday.value) {
   await signOut($firebaseAuth);
   navigateTo("/login");
@@ -58,7 +57,7 @@ const isLoading = ref(true);
 const toastVisible = ref(false);
 const toastPops = ref<ToastProps>({ message: "" });
 
-// reactiveデータ
+// 表示用reactiveデータ
 const refDispData = ref<DispCdItem[]>([
   {
     dspOrder: 0,
@@ -79,30 +78,35 @@ const refPersonalData = ref<PersonalItem>({
   sex: "",
 });
 const refnextData = ref<string>("");
+const refDispBtn = ref<DispItem[]>([{ info: 0, label: "", status: 0, param: "", visible: false }]);
 
+// 現在選択されている言語
 const langDt = ref<LangStr>();
+
 // その他変数
 let langData: AllLanguage;
 
-// firestoreデータ
+// firestoreのスナップショットを取得
 const { data, error, stop } = useFirestoreSnapshot<PatientData>(
   cookieToday.value.toString(),
   "00" + cookiePatient.value
 );
 
+// ページがマウントされたときに言語データを取得し、初期言語を設定
 onMounted(async () => {
   await langGet();
   let langage: LangKey = "ja";
   if (cookielang.value) {
     langage = cookielang.value;
   }
-  langageValueSent(langage);
+  languageValueSent(langage);
 });
 
 onBeforeUnmount(() => {
   stop();
 });
 
+// snapshotのデータが更新されたときの処理
 watch([data, error], ([newData, newError]) => {
   if (newError) {
     toastPops.value = {
@@ -118,10 +122,12 @@ watch([data, error], ([newData, newError]) => {
     isLoading.value = false;
   }
 });
-const langageValueSent = (val: LangKey) => {
+// 選択された言語データのセット
+const languageValueSent = (val: LangKey) => {
   langDt.value = langData[val];
   cookielang.value = val;
 };
+// 表示データのセット
 const dataset = (newData: PatientData) => {
   refHeadData.value.courseNm = setDataField(newData, "courseNm", "コース取得エラー");
   refPersonalData.value.name = setDataField(newData, "name", "氏名取得エラー");
@@ -131,7 +137,9 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.sex = getGenderLabel(newData.sex);
   refDispData.value = newData.dispCd;
   refnextData.value = newData.active;
+  refDispBtn.value = newData.dispBtn;
 };
+// firestoreから言語データを取得
 const langGet = async () => {
   try {
     const { data, error } = await useFirestoreDocument<AllLanguage>("setting", "lang");

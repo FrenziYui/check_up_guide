@@ -50,6 +50,7 @@ export interface ChkJimu {
 
 export interface PatientData extends HeadItem, PersonalItem {
   dispCd: DispCdItem[];
+  dispBtn: DispItem[];
   physical: string | null;
   pregnant: string | null;
   urine: StoolUrine | null;
@@ -68,6 +69,14 @@ export interface InvestigationData {
 export interface NextItem {
   next: string;
   active: string;
+}
+
+export interface DispItem {
+  info: number;
+  label: string;
+  status: number;
+  param: string;
+  visible: boolean;
 }
 
 // interface Detail {

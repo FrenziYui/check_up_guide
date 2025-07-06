@@ -13,10 +13,10 @@
       :class="buttonClass"
       @click="handleClick"
     >
-      {{ label }}
-      <span v-if="status === 1 || status === 8 || status === 9" class="absolute bottom-1 right-1">
-        <img src="/icon/info.png" v-if="status === 1 || status === 9" class="w-8 h-8" />
-        <img src="/icon/check.svg" v-else-if="status === 8" class="w-8 h-8" />
+      {{ item.label }}
+      <span v-if="item.status === 1 || item.status === 8 || item.status === 9" class="absolute bottom-1 right-1">
+        <img src="/icon/info.png" v-if="item.status === 1 || item.status === 9" class="w-8 h-8" />
+        <img src="/icon/check.svg" v-else-if="item.status === 8" class="w-8 h-8" />
       </span>
     </button>
 
@@ -26,6 +26,8 @@
 
 <script setup lang="ts">
 import type { ToastProps } from "../types/toastType";
+import type { DispItem } from "~/types/baseType";
+
 // 定数
 const { MSG } = useConstants();
 
@@ -36,9 +38,7 @@ const toastVisible = ref(false);
 const toastPops = ref<ToastProps>({ message: "" });
 
 const props = defineProps<{
-  label: string;
-  status: number;
-  param: string;
+  item: DispItem;
 }>();
 
 const showModal = ref(false);
@@ -49,7 +49,7 @@ const handleClick = () => {
 };
 const handlePasswordSubmit = (pass: string) => {
   if (pass === "1") {
-    selectTab.value = props.param;
+    selectTab.value = props.item.param;
     router.push({ path: "/infopage" });
   } else {
     toastPops.value = {
@@ -62,7 +62,7 @@ const handlePasswordSubmit = (pass: string) => {
   }
 };
 const buttonClass = computed(() => {
-  switch (props.status) {
+  switch (props.item.status) {
     case 8:
       return "bg-gray-400 text-secondary-foreground ";
     case 9:
