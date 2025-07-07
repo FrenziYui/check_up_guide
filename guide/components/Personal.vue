@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import VueBarcode from "@chenfengyuan/vue-barcode";
-import type { PersonalItem } from "../types/baseType";
+import type { PersonalItem } from "~/types/baseType";
 
 // props
 defineProps<{

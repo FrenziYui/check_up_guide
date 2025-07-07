@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 // 型
-import type { DispCdItem } from "../types/baseType";
+import type { DispCdItem } from "~/types/baseType";
 // props
 const props = defineProps<{
   items: DispCdItem[];

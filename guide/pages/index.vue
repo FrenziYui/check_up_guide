@@ -11,7 +11,7 @@
   <div class="flex flex-col h-screen">
     <Header :title="refHeadData.courseNm" @langage-sent="languageValueSent" />
     <Personal :data="refPersonalData" />
-    <Examination :items="refDispData" :langDt="langDt" />
+    <Examination :items="refDispData" :langDt="langDt" :active="refnextData" />
     <NextExam :item="refnextData" :langDt="langDt" />
     <div class="pl-5 pt-2 pr-5">
       <StatusGrid :items="refDispBtn" />
@@ -124,7 +124,11 @@ watch([data, error], ([newData, newError]) => {
 });
 // 選択された言語データのセット
 const languageValueSent = (val: LangKey) => {
-  langDt.value = langData[val];
+  const wklangDt = langData[val];
+  langDt.value = {
+    ...wklangDt,
+    ...Object.fromEntries(Object.entries(langData["ja"]).map(([key, value]) => [`j${key}`, value])),
+  };
   cookielang.value = val;
 };
 // 表示データのセット

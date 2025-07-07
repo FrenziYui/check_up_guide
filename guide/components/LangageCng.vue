@@ -11,7 +11,7 @@
   </details>
 </template>
 <script setup lang="ts">
-import type { LangKey } from "../types/langType";
+import type { LangKey } from "~/types/langType";
 
 const emit = defineEmits<{ (event: "langage-sent", langage: LangKey): void }>();
 // emit定義 end

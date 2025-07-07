@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ToastProps } from "../types/toastType";
+import type { ToastProps } from "~/types/toastType";
 import type { DispItem } from "~/types/baseType";
 
 // 定数

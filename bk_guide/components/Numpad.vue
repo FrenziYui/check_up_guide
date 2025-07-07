@@ -52,7 +52,6 @@ const maskedPin = computed(() => {
   console.log("aa");
   let abcd;
   abcd = "*".repeat(pin.value.length);
-  console.log(abcd);
   return abcd; // アスタリスクでマスク
 });
 

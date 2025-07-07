@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ToastProps } from "../../types/toastType";
+import type { ToastProps } from "~/types/toastType";
 
 // デフォルト値を設定（省略時 or 空文字の場合の挙動）
 const props = withDefaults(defineProps<ToastProps>(), {

@@ -33,6 +33,10 @@ const emit = defineEmits(["submit", "cancel"]);
 const code = ref("");
 const masked = computed(() => "*".repeat(code.value.length));
 
+onMounted(() => {
+  code.value = "";
+});
+
 const append = (val: string) => {
   if (code.value.length < 6) code.value += val;
 };

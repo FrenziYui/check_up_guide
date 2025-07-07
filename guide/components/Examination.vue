@@ -12,8 +12,9 @@
           :investigationData="{
             InpCd: item.inpCd,
             DispName: langDt[item.inpCd] || item.name,
+            DispJpn: langDt?.[`j${item.inpCd}`] ?? item.name,
             Status: item.status,
-            Active: false,
+            Active: active,
           }"
         />
       </div>
@@ -23,13 +24,14 @@
 
 <script setup lang="ts">
 // 型
-import type { DispCdItem } from "../types/baseType";
-import type { LangStr } from "../types/langType";
+import type { DispCdItem } from "~/types/baseType";
+import type { LangStr } from "~/types/langType";
 
 // props
 const props = defineProps<{
   items: DispCdItem[];
   langDt: LangStr | undefined;
+  active: string;
 }>();
 onMounted(async () => {});
 </script>

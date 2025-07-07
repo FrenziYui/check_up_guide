@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LangKey } from "../types/langType";
+import type { LangKey } from "~/types/langType";
 import { signOut } from "firebase/auth";
 const { COOKIE_SETTING } = useConstants();
 const { $firebaseAuth } = useNuxtApp();

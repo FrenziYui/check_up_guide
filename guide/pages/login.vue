@@ -89,7 +89,7 @@ const toastPops = ref<ToastProps>({ message: "" });
 const inputData = reactive<ExLoginData>({
   userId: "test",
   password: "test01",
-  patientNo: "00057902",
+  patientNo: "00903947",
 });
 // const inputData = reactive<ExLoginData>({
 //   userId: "",
@@ -108,7 +108,7 @@ const course = ref<string>("");
 
 onMounted(async () => {
   // test start
-  cookieToday.value = "20250704";
+  cookieToday.value = "20250707";
   // cookieToday.value = formatDateToString(new Date());
   // test end
   cookieLang.value = "ja";

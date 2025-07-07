@@ -58,13 +58,16 @@ export interface PatientData extends HeadItem, PersonalItem {
   yy_no: number;
   js_cd: string;
   active: string;
+  force: string;
+  completed: string[] | null;
 }
 
 export interface InvestigationData {
   Status: string;
   InpCd: string;
-  Active: boolean;
+  Active: string;
   DispName: string;
+  DispJpn: string;
 }
 export interface NextItem {
   next: string;
