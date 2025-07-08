@@ -59,6 +59,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 // 型定義
 import type { ExLoginData, ExLoginFlag, PatientData } from "../types/baseType";
 import type { ToastProps } from "../types/toastType";
+import type { WhereFilterOp } from "firebase/firestore";
 
 // 定数読込
 const { MSG, COOKIE_SETTING, PATIENT_LENGTH } = useConstants();
@@ -89,7 +90,7 @@ const toastPops = ref<ToastProps>({ message: "" });
 const inputData = reactive<ExLoginData>({
   userId: "test",
   password: "test01",
-  patientNo: "00903947",
+  patientNo: "00886738",
 });
 // const inputData = reactive<ExLoginData>({
 //   userId: "",
@@ -108,7 +109,7 @@ const course = ref<string>("");
 
 onMounted(async () => {
   // test start
-  cookieToday.value = "20250707";
+  cookieToday.value = "20250708";
   // cookieToday.value = formatDateToString(new Date());
   // test end
   cookieLang.value = "ja";
@@ -139,26 +140,58 @@ const handleLogin = async () => {
 const checkInput = async () => {
   if (inputData.patientNo.length === PATIENT_LENGTH) {
     isLoading.value = true;
-    const { data, error } = await useFirestoreDocument<PatientData>(
-      String(cookieToday.value),
-      "00" + inputData.patientNo
-    );
-    if (error.value != null || data.value == null) {
-      toastPops.value = {
-        message: MSG.EA00,
-        type: "error",
-        vPos: "middle",
-        hPos: "center",
-      };
-      toastVisible.value = true;
-    } else {
-      name.value = data.value.name;
-      course.value = data.value.courseNm;
-    }
+    const result = getFirestoreDocument();
+    // const { data, error } = await useFirestoreDocument<PatientData>(
+    //   String(cookieToday.value),
+    //   "00" + inputData.patientNo
+    // );
+    // if (error.value != null || data.value == null) {
+    //   toastPops.value = {
+    //     message: MSG.EA00,
+    //     type: "error",
+    //     vPos: "middle",
+    //     hPos: "center",
+    //   };
+    //   toastVisible.value = true;
+    // } else {
+    //   name.value = data.value.name;
+    //   course.value = data.value.courseNm;
+    // }
     isLoading.value = false;
   } else {
     name.value = "";
     course.value = "";
+  }
+};
+
+const getFirestoreDocument = async (): Promise<{ count: number; data: string }> => {
+  const retDt = { count: 0, data: "" };
+  const collectionName = String(cookieToday.value);
+  const para: { field: string; op: WhereFilterOp; value: any }[] = [
+    { field: "patientId", op: "==", value: inputData.patientNo },
+    { field: "cancel", op: "==", value: false },
+  ];
+
+  const { dataList, docIds, error } = await useFirestoreQueryByFields(collectionName, para);
+  if (error.value) {
+    retDt.data = MSG.E000;
+    return retDt;
+  }
+  retDt.count = dataList.value.length;
+  switch (true) {
+    case retDt.count === 0:
+      retDt.data = MSG.EA00;
+      return retDt;
+    case retDt.count === 1:
+      retDt.data = docIds.value[0];
+      return retDt;
+    case retDt.count > 1:
+      retDt.data = MSG.EA04;
+      return retDt;
+    default:
+      retDt.count = 0;
+      retDt.data = MSG.E000;
+      return retDt;
   }
 };
 

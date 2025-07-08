@@ -33,7 +33,7 @@ import type { InvestigationData, PatientData } from "~/types/baseType";
 import type { ToastProps } from "~/types/toastType";
 
 // 定数
-const { MSG, COOKIE_SETTING } = useConstants();
+const { MSG, COOKIE_SETTING, AQXIOS_TIMEOUT } = useConstants();
 
 // cookie
 const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
@@ -50,6 +50,9 @@ const doubleTapThreshold = 300; // ダブルタップと認識する時間の間
 // モーダル表示用
 const showModal = ref(false);
 const showPasscode = ref(false);
+
+// plugin
+const { $axios2 } = useNuxtApp();
 
 // モーダルのボタン設定
 const modalBtn = ref([
@@ -120,6 +123,8 @@ const handleCustomAction = async (action: string) => {
           vPos: "middle",
           hPos: "center",
         };
+      } else {
+        firestoreUpdate(collection,document);
       }
       break;
     case "zumi":
@@ -131,6 +136,28 @@ const handleCustomAction = async (action: string) => {
       break;
     default:
       break;
+  }
+};
+const firestoreUpdate = async (collection:string,document:string) => {
+  try {
+    const requestdata = {
+      lang: collection,
+      answer: document,
+    };
+    const response = await $axios2.post("/post-answer", requestdata, {
+      timeout: AQXIOS_TIMEOUT,
+    });
+    if (response.data.status < 0) {
+      throw new Error("update 失敗");
+    }
+  } catch (error) {
+    toastPops.value = {
+      message: MSG.E001,
+      type: "error",
+      vPos: "middle",
+      hPos: "center",
+    };
+    toastVisible.value = true;
   }
 };
 </script>
