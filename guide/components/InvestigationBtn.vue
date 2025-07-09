@@ -1,4 +1,6 @@
 <template>
+  <CommonLoading :isLoading="isLoading" />
+
   <CommonToastMessage
     v-model="toastVisible"
     :message="toastPops.message"
@@ -29,19 +31,24 @@
   />
 </template>
 <script setup lang="ts">
-import type { InvestigationData, PatientData } from "~/types/baseType";
+import type { InvestigationData, PatientData, CookieData } from "~/types/baseType";
 import type { ToastProps } from "~/types/toastType";
 
 // 定数
 const { MSG, COOKIE_SETTING, AQXIOS_TIMEOUT } = useConstants();
 
 // cookie
-const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
-const cookieToday = useCookie<string>("today", COOKIE_SETTING);
+const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
+const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
+const cookieYYNO = useCookie<CookieData["yyno"]>("yyno", COOKIE_SETTING);
+const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 
 // Toast表示用
 const toastVisible = ref(false);
 const toastPops = ref<ToastProps>({ message: "" });
+
+// 表示制御
+const isLoading = ref(false);
 
 // ダブルタップ検知用
 const lastTap = ref(0);
@@ -111,52 +118,83 @@ const handlePasswordSubmit = (pass: string) => {
 // モーダルで指定されたデータの更新を行う
 const handleCustomAction = async (action: string) => {
   const collection = cookieToday.value.toString();
-  const document = "00" + cookiePatient.value;
+  const document = cookieDocId.value;
   switch (action) {
     case "next":
       const { error, setDocument } = useFirestoreDocumentUpdate();
       const success = await setDocument(collection, document, { force: props.investigationData.InpCd }, true);
       if (!success) {
         toastPops.value = {
-          message: error.value ?? MSG.E000,
+          message: error.value ?? MSG.E004,
           type: "error",
           vPos: "middle",
           hPos: "center",
         };
       } else {
-        firestoreUpdate(collection,document);
+        firestoreUpdate(collection, document);
       }
       break;
     case "zumi":
-      const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientData>(collection, document);
-      console.log(firedata.value?.completed);
+      await updateCompletedStatus("add", collection, document, props.investigationData.InpCd);
       break;
     case "no":
-      console.log("ステータスCです");
+      await updateCompletedStatus("remove", collection, document, props.investigationData.InpCd);
       break;
     default:
       break;
   }
 };
-const firestoreUpdate = async (collection:string,document:string) => {
-  try {
-    const requestdata = {
-      lang: collection,
-      answer: document,
+
+const updateCompletedStatus = async (mode: "add" | "remove", collection: string, document: string, inpCd: string) => {
+  const { data, error: fetchError } = await useFirestoreDocument<PatientData>(collection, document);
+  if (!data.value) return;
+
+  const completed = data.value.completed ?? [];
+
+  const shouldUpdate =
+    (mode === "add" && !completed.includes(inpCd)) || (mode === "remove" && completed.includes(inpCd));
+  if (!shouldUpdate) return;
+
+  const updatedCompleted = mode === "add" ? [...completed, inpCd] : completed.filter((item) => item !== inpCd);
+
+  const { error, setDocument } = useFirestoreDocumentUpdate();
+  const success = await setDocument(collection, document, { completed: updatedCompleted }, true);
+
+  if (!success) {
+    toastPops.value = {
+      message: error.value ?? MSG.E004,
+      type: "error",
+      vPos: "middle",
+      hPos: "center",
     };
-    const response = await $axios2.post("/post-answer", requestdata, {
+  } else {
+    firestoreUpdate(collection, document);
+  }
+};
+
+const firestoreUpdate = async (collection: string, document: string) => {
+  try {
+    isLoading.value = true;
+    const requestdata = {
+      J_DATE: String(cookieToday.value),
+      JS_CD: `00${cookiePatient.value}`,
+      YY_NO: cookieYYNO.value,
+    };
+    const response = await $axios2.post("/detailone", requestdata, {
       timeout: AQXIOS_TIMEOUT,
     });
     if (response.data.status < 0) {
       throw new Error("update 失敗");
     }
+    isLoading.value = false;
   } catch (error) {
     toastPops.value = {
-      message: MSG.E001,
+      message: MSG.E004,
       type: "error",
       vPos: "middle",
       hPos: "center",
     };
+    isLoading.value = false;
     toastVisible.value = true;
   }
 };

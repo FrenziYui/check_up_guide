@@ -29,7 +29,7 @@ import { signOut } from "firebase/auth";
 const { setDataField, formatDateToJapanese, getGenderLabel } = useCommon();
 
 // 型
-import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem } from "~/types/baseType";
+import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem, CookieData } from "~/types/baseType";
 import type { AllLanguage, LangStr, LangKey } from "~/types/langType";
 import type { ToastProps } from "~/types/toastType";
 
@@ -40,12 +40,13 @@ const { $firebaseAuth } = useNuxtApp();
 const { MSG, COOKIE_SETTING } = useConstants();
 
 // cookie
-const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
-const cookieToday = useCookie<string>("today", COOKIE_SETTING);
-const cookielang = useCookie<LangKey>("lang", COOKIE_SETTING);
+const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
+const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
+const cookieLang = useCookie<CookieData["lang"]>("lang", COOKIE_SETTING);
+const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 
 // cookieの値がない場合はログイン画面へリダイレクト
-if (!cookiePatient.value || !cookieToday.value) {
+if (!cookiePatient.value || !cookieToday.value || !cookieLang.value || !cookieDocId.value) {
   await signOut($firebaseAuth);
   navigateTo("/login");
 }
@@ -87,17 +88,14 @@ const langDt = ref<LangStr>();
 let langData: AllLanguage;
 
 // firestoreのスナップショットを取得
-const { data, error, stop } = useFirestoreSnapshot<PatientData>(
-  cookieToday.value.toString(),
-  "00" + cookiePatient.value
-);
+const { data, error, stop } = useFirestoreSnapshot<PatientData>(cookieToday.value.toString(), cookieDocId.value);
 
 // ページがマウントされたときに言語データを取得し、初期言語を設定
 onMounted(async () => {
   await langGet();
   let langage: LangKey = "ja";
-  if (cookielang.value) {
-    langage = cookielang.value;
+  if (cookieLang.value) {
+    langage = cookieLang.value;
   }
   languageValueSent(langage);
 });
@@ -129,7 +127,7 @@ const languageValueSent = (val: LangKey) => {
     ...wklangDt,
     ...Object.fromEntries(Object.entries(langData["ja"]).map(([key, value]) => [`j${key}`, value])),
   };
-  cookielang.value = val;
+  cookieLang.value = val;
 };
 // 表示データのセット
 const dataset = (newData: PatientData) => {

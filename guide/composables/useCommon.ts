@@ -59,36 +59,11 @@ export const useCommon = () => {
       return null;
     }
   };
-  const convertDate = (date: string | Date | null, language: string, week: Boolean = false): string => {
-    if (date) {
-      const dateObj = new Date(date);
-      const options: Record<string, Intl.DateTimeFormatOptions> = {
-        ja: { year: "numeric", month: "long", day: "numeric" },
-        zh: { year: "numeric", month: "long", day: "numeric" },
-        en: { year: "numeric", month: "long", day: "numeric" },
-      };
 
-      if (week) {
-        options[language].weekday = "long";
-      }
-
-      return new Intl.DateTimeFormat(language, options[language]).format(dateObj);
-    } else {
-      return "";
-    }
-  };
-
-  const convertHonorific = (name: string, language: string): string => {
-    switch (language) {
-      case "ja":
-        return `${name} 様`;
-      case "en":
-        return `Mr./Ms. ${name}`;
-      case "zh":
-        return `${name} 先生`;
-      default:
-        return name;
-    }
+  const getDocId = (code: string | number): string => {
+    if (code === "1" || code === 1) return "男性";
+    if (code === "2" || code === 2) return "女性";
+    return "不明";
   };
 
   return {

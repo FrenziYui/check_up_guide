@@ -1,12 +1,15 @@
-import type { LoginData, LoginFlag } from "../types/loginType";
+import type { LoginData, LoginFlag } from "~/types/loginType";
+import type { LangKey } from "~/types/langType";
 
 // ログイン情報(基本に患者IDを追加)
 export interface ExLoginData extends LoginData {
   patientNo: string;
+  yyno: string;
 }
 
 export interface ExLoginFlag extends LoginFlag {
   patientNo: boolean;
+  yyno: boolean;
 }
 
 export interface DispCdItem {
@@ -80,6 +83,15 @@ export interface DispItem {
   status: number;
   param: string;
   visible: boolean;
+}
+
+export interface CookieData {
+  userId: string;
+  patientNo: string;
+  today: string;
+  lang: LangKey;
+  yyno: string;
+  docid: string;
 }
 
 // interface Detail {

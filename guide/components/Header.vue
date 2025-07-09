@@ -27,11 +27,18 @@
 
 <script setup lang="ts">
 import type { LangKey } from "~/types/langType";
+import type { CookieData } from "~/types/baseType";
+
 import { signOut } from "firebase/auth";
 const { COOKIE_SETTING } = useConstants();
 const { $firebaseAuth } = useNuxtApp();
 // cookie
-const cookieUserId = useCookie<string>("userId", COOKIE_SETTING);
+const cookieUserId = useCookie<CookieData["userId"]>("userId", COOKIE_SETTING);
+const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
+const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
+const cookieLang = useCookie<CookieData["lang"]>("lang", COOKIE_SETTING);
+const cookieYYNO = useCookie<CookieData["yyno"]>("yyno", COOKIE_SETTING);
+const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 // props
 const props = withDefaults(
   defineProps<{
@@ -64,6 +71,11 @@ const handleLogout = () => {
 const handleConfirmLogout = async () => {
   await signOut($firebaseAuth);
   cookieUserId.value = "";
+  cookiePatient.value = "";
+  cookieToday.value = "";
+  cookieLang.value = "ja";
+  cookieYYNO.value = "";
+  cookieDocId.value = "";
   navigateTo("/login");
 };
 

@@ -44,15 +44,16 @@
 <script setup lang="ts">
 // 型
 import type { ToastProps } from "~/types/toastType";
-import type { PatientData, StoolUrine } from "~/types/baseType";
+import type { PatientData, StoolUrine, CookieData } from "~/types/baseType";
 
 // 定数
 const { MSG, COOKIE_SETTING } = useConstants();
 const tabs = ["便/尿検査", "事務", "問診票", "保健師", "医師", "その他"];
 
 // cookie
-const cookiePatient = useCookie<string>("patientNo", COOKIE_SETTING);
-const cookieToday = useCookie<string>("today", COOKIE_SETTING);
+const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
+const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
+const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 
 // Toast表示用
 const toastVisible = ref(false);
@@ -72,7 +73,7 @@ const dataStoolUrine = ref<StoolUrine>({
 // Firestoreデータ取得
 const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientData>(
   cookieToday.value.toString(),
-  "00" + cookiePatient.value
+  cookieDocId.value
 );
 
 onMounted(async () => {
@@ -120,7 +121,7 @@ const updStoolUrine = async () => {
   );
   if (!success) {
     toastPops.value = {
-      message: error.value ?? MSG.E000,
+      message: error.value ?? MSG.E004,
       type: "error",
       vPos: "middle",
       hPos: "center",
