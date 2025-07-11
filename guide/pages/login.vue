@@ -116,7 +116,7 @@ const inputData = reactive<ExLoginData>({
   userId: "test",
   yyno: "",
   password: "test01",
-  patientNo: "00886738",
+  patientNo: "",
   // patientNo: "00020473",
 });
 // const inputData = reactive<ExLoginData>({
@@ -137,8 +137,8 @@ const course = ref<string>("");
 
 onMounted(async () => {
   // test start
-  cookieToday.value = "20250708";
-  // cookieToday.value = formatDateToString(new Date());
+  // cookieToday.value = "20250708";
+  cookieToday.value = formatDateToString(new Date());
   // test end
   cookieLang.value = "ja";
 });

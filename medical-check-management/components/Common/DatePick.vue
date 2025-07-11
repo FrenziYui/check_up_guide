@@ -1,17 +1,17 @@
 <template>
-  <div class="form-control w-40 max-w-xs ml-3">
+  <div class="form-control w-40 ml-3">
     <input
       ref="datepicker"
       type="text"
       placeholder="日付を選択"
-      class="input input-bordered w-40 max-w-xs h-8 bg-info"
+      class="input input-bordered w-40 h-8 bg-info text-center"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
+import "flatpickr/dist/themes/confetti.css";
 import { Japanese } from "flatpickr/dist/l10n/ja.js";
 
 const { formatDateToString } = useCommon();

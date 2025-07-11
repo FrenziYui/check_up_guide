@@ -59,7 +59,7 @@ watch(
 const iconSet = (val: DataValues) => {
   const icon = STATUS_ICONS[val.status] || "";
   if (val.time && NOT_INSPECTED == val.status) {
-    return `${icon} (${val.time})`;
+    return `${icon} (${val.})`;
   } else {
     return icon;
   }

@@ -10,7 +10,9 @@ export default defineNuxtConfig({
 
   css: ["~/assets/app.css"],
   ssr: false,
-
+  imports: {
+    dirs: ["composables", "composables/useFirestore"], 
+  },
   app: {
     head: {
       link: [

@@ -34,6 +34,7 @@ const { COOKIE_SETTING, APP_TITLE } = useConstants();
 
 // cookie
 const cookieUserId = useCookie<CookieData["userId"]>("userId", COOKIE_SETTING);
+const cookieCurrentDate = useCookie<CookieData["currentDate"]>("currentDate", COOKIE_SETTING);
 
 // composable
 const { logout, error } = useFirebaseAuth();
@@ -72,6 +73,9 @@ const handleConfirmLogout = async () => {
 
 // 日付が変わったらデータ更新
 watch(currentDate, (newValue) => {
+  if (newValue) {
+    cookieCurrentDate.value = newValue;
+  }
   emit("update:modelValue", newValue);
 });
 // 親の変更を検知

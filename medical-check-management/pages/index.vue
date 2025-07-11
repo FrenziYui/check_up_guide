@@ -1,5 +1,6 @@
 <template>
   <Header v-model:modelValue="currentDate" />
+  <DataList v-if="currentDate" :currentDate="currentDate" />
 </template>
 <script lang="ts" setup>
 definePageMeta({
