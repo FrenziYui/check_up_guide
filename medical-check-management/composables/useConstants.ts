@@ -1,5 +1,5 @@
 export const useConstants = () => {
-  const TEST_MODE = false;
+  const TEST_MODE = true;
 
   const APP_TITLE = "人間ドッグ経路案内システム";
   const BASE_URL = TEST_MODE ? "http://localhost:8080/" : "https://chklist-server-672872025209.asia-northeast2.run.app";
@@ -44,19 +44,19 @@ export const useConstants = () => {
     { name: "eye", title: "視力検査", width: 70 },
     { name: "ecg", title: "心電図", width: 70 },
     { name: "ultrasound", title: "超音波", width: 110 },
-    { name: "mri", title: "MRI/MRA", width: 110 },
+    { name: "mri", title: "MRI/MRA", width: 150 },
     { name: "ct", title: "CT", width: 110 },
     { name: "xray", title: "X線", width: 70 },
-    { name: "endoscopy", title: "内視鏡", width: 110 },
+    { name: "endoscopy", title: "内視鏡", width: 150 },
     { name: "gynecology", title: "婦人科", width: 70 },
     { name: "fluoroscopy", title: "胃透視", width: 110 },
     { name: "blood", title: "採血", width: 70 },
     { name: "petct", title: "PETCT", width: 110 },
     { name: "pulmonary", title: "肺機能", width: 70 },
   ];
-  const NOT_INSPECTED = "A";
+  const NOT_INSPECTED = "0";
   const STATUS_ICONS: { [key: string]: string } = {
-    A: "前" /*検査前 */,
+    0: "⭕" /*検査前 */,
     "3": "検査中" /*検査中 */,
     "1": "✅" /*検査終了 */,
     X: "➖" /*対象外 */,

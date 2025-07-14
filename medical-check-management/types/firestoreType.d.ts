@@ -8,6 +8,11 @@ export interface DataValues {
   status: string;
   type: string;
 }
+export interface OrderValues {
+  inpCd: string;
+  name: string;
+  order: number;
+}
 export interface BaseRowValues {
   id: number;
   patientId: string;
@@ -15,6 +20,7 @@ export interface BaseRowValues {
   sex: string;
   age: string;
   dispCd: DataValues[];
+  dispOrder: OrderValues[];
 }
 export interface RowValues extends BaseRowValues {
   [key: string]: any;
