@@ -13,6 +13,7 @@ export const useConstants = () => {
     E003: "ID又はパスワードが異なります。",
     E004: "患者IDが正しくありません。",
     E005: "指定されたドキュメントが存在しません。{{DETAILS}}",
+    E006: "ファイルが選択されていません。",
   } as const;
   // このシステム独自メッセージ
   const EXTMSG = {} as const;

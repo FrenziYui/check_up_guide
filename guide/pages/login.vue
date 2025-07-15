@@ -216,7 +216,6 @@ const getFirestoreDocument = async (): Promise<{ count: number; data: string }> 
     { field: "patientId", op: "==", value: inputData.patientNo },
     { field: "cancel", op: "==", value: false },
   ];
-
   const { dataList, docIds, error } = await useFirestoreQueryByFields(collectionName, para);
   if (error.value) {
     retDt.data = MSG.E004;

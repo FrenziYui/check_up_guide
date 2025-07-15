@@ -50,6 +50,25 @@ export const BASE_COLUMN_INFO: ClumnArea[] = [
   },
   {
     BASE: {
+      header: "予約番号",
+      key: "yy_no",
+      width: 10,
+      style: {
+        alignment: {
+          horizontal: "right",
+          vertical: "middle",
+          wrapText: false,
+          shrinkToFit: true,
+        },
+      },
+    },
+    HEAD: {
+      alignment: { horizontal: "center", vertical: "middle" },
+      fill: BGCOLOR,
+    },
+  },
+  {
+    BASE: {
       header: "カナ氏名",
       key: "kana",
       width: 16,

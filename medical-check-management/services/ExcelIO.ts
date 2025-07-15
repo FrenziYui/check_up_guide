@@ -4,9 +4,9 @@ import { useSorted } from "@vueuse/core";
 
 import type { Worksheet, Column } from "exceljs";
 import type { RowValues, ReturnInfo } from "~/types/excelType";
-import { COLUMN_INFO } from "~/types/excelType";
+import type { BaseRowValues, OrderValues } from "~/types/firestoreType";
+import { COLUMN_INFO, CHECK_ITEM_COLUMN_INFO, BASE_COLUMN_INFO } from "~/types/excelType";
 import { TOAST_TYPES } from "~/types/toastType";
-const { formatDateTimeToString } = useCommon();
 // この処理独自(配列を自動展開する) Start
 const { COL_INFO, NOT_INSPECTED } = useConstants();
 // この処理独自 End
@@ -15,13 +15,13 @@ export class ExcelIO {
   // プロパティ
   public targetCollection!: string;
   public exeResults: string[] = [];
-  public nomalCount: number = 0;
+  public normalCount: number = 0;
   public errorCount: number = 0;
   constructor() {}
 
   init(): void {
     this.exeResults = [];
-    this.nomalCount = 0;
+    this.normalCount = 0;
     this.errorCount = 0;
   }
 
@@ -29,7 +29,8 @@ export class ExcelIO {
     // 終了処理(javascriptは呼ばないとダメ)
   }
 
-  async excelExport(target: any): Promise<ReturnInfo> {
+  // ExcelExport
+  async excelExport(target: any, filename: string): Promise<ReturnInfo> {
     let returnData: ReturnInfo = { message: "", status: TOAST_TYPES.INFO };
     try {
       const tableData: RowValues[] = [];
@@ -41,6 +42,7 @@ export class ExcelIO {
           patientId: item.patientId,
           courseNm: item.courseNm,
           sex: item.sex,
+          yy_no: item.yy_no,
         };
 
         // 配列をCOL_INFOのnameリストを使って検査項目を設定
@@ -106,6 +108,7 @@ export class ExcelIO {
         for (let colIndex = startCol; colIndex <= endCol; colIndex++) {
           const cell = row.getCell(colIndex);
 
+          // 変更箇所条件によりスタイルを変更 Start
           // ヘッダー行（1行目）はスタイル変更しない
           if (rowIndex > startRow) {
             if (cell.value === null || cell.value === undefined) {
@@ -121,6 +124,7 @@ export class ExcelIO {
               };
             }
           }
+          // 変更箇所条件によりスタイルを変更 End
 
           // すべてのセルに罫線を設定（ヘッダー含む）
           cell.style.border = {
@@ -135,7 +139,7 @@ export class ExcelIO {
       // 変更箇所 フィルタの設定
       worksheet.autoFilter = {
         from: "A1",
-        to: "R1",
+        to: "S1",
       };
 
       // 変更箇所 表示の固定
@@ -143,15 +147,14 @@ export class ExcelIO {
         {
           state: "frozen",
           ySplit: 1, // 1行の下で固定
-          xSplit: 4, // C列の右で固定
+          xSplit: 5, // E列の右で固定
         },
       ];
 
       if (endRow > 1) {
         // 書き出し
         const buffer = await workbook.xlsx.writeBuffer();
-        // 変更箇所 ファイル名
-        saveAs(new Blob([buffer]), `人間ドッグ経路案内システム_${formatDateTimeToString(new Date())}.xlsx`);
+        saveAs(new Blob([buffer]), filename);
         returnData = {
           status: TOAST_TYPES.SUCCESS,
           message: `ファイルを出力しました。出力件数は${endRow - 1}件です。`,
@@ -170,6 +173,142 @@ export class ExcelIO {
       };
     } finally {
       return returnData;
+    }
+  }
+
+  // ExcelImport
+  readBuffer(fileData: File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target?.result;
+        resolve(buffer);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsArrayBuffer(fileData);
+    });
+  }
+
+  async excelImport(fileData: File, currentDate: string): Promise<{ data: ReturnInfo; error: string[] }> {
+    let returnData: ReturnInfo = { message: "", status: TOAST_TYPES.INFO };
+    const allErrorLogs: string[] = [];
+    try {
+      const buffer = await this.readBuffer(fileData);
+
+      if (buffer) {
+        // ExcelJSでバッファを読み込む
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer as ArrayBuffer);
+
+        const worksheet = workbook.getWorksheet("data");
+
+        // シートが存在するか確認
+        if (!worksheet) {
+          returnData = {
+            status: TOAST_TYPES.ERROR,
+            message: `シート[data]が存在しない為、データの取込を行いませんでした。`,
+          };
+          return { data: returnData, error: [] };
+        }
+
+        const rows: any = [];
+        worksheet.eachRow((row) => rows.push(row));
+
+        // シートの各行を処理
+        for (const row of rows) {
+          const rowNumber = row.number;
+          if (!Array.isArray(row.values)) {
+            returnData = {
+              status: TOAST_TYPES.ERROR,
+              message: `データが存在しないため、データの取込を行いませんでした。`,
+            };
+            return { data: returnData, error: [] };
+          }
+          const rowValue = row.values.slice(1);
+
+          // ヘッダーのフォーマットチェック
+          if (rowNumber === 1) {
+            const headers = [];
+            headers.push(...rowValue);
+            headers.forEach((header, index) => {
+              if (header !== COLUMN_INFO[index].BASE.header) {
+                throw useCustomError(
+                  `データのフォーマットが異なるため、データの取込を行いませんでした。(ヘッダー)`,
+                  "INVALID_HEADER",
+                  `想定：${COLUMN_INFO[index].BASE.header} Excel：${header} `
+                );
+              }
+            });
+          } else {
+            const errLogs: string[] = await this.updateData(rowValue, currentDate);
+            if (errLogs.length == 0) {
+              this.normalCount += 1;
+            } else {
+              this.errorCount += 1;
+              allErrorLogs.push(...errLogs);
+            }
+          }
+        }
+      }
+      returnData = {
+        status: this.errorCount ? TOAST_TYPES.ERROR : TOAST_TYPES.INFO,
+        message: `正常件数：${this.normalCount}件、エラー件数：${this.errorCount}件`,
+      };
+      return { data: returnData, error: allErrorLogs };
+    } catch (error) {
+      if (error instanceof CustomError) {
+        returnData = {
+          status: TOAST_TYPES.ERROR,
+          message: `${error.message}(${error.details})`,
+        };
+      } else {
+        returnData = {
+          status: TOAST_TYPES.ERROR,
+          message: `想定外のエラーが発生しました。再度実行しエラーが発生する場合、アプリチームに連絡ください。`,
+        };
+      }
+      return { data: returnData, error: [] };
+    }
+  }
+
+  private async updateData(rowValue: any, currentDate: string): Promise<string[]> {
+    const jsCd = String(rowValue[0]).padStart(10, "0");
+    const { data, error } = await useFirestoreDocument<BaseRowValues>(currentDate, `${jsCd}_${rowValue[1]}`);
+    const errLog = [];
+    try {
+      if (error.value != null || data.value == null) {
+        errLog.push(`患者ID:${rowValue[0]}のデータが(${currentDate})見つかりませんでした`);
+        return errLog;
+      }
+      let updData: OrderValues[] = data.value.dispOrder;
+      for (let i = 0; i < CHECK_ITEM_COLUMN_INFO.length; i++) {
+        // 対象文字を抜き出し
+        const rawVal = rowValue[i + BASE_COLUMN_INFO.length];
+        // 1. undefinedなら"99"をセット、それ以外は文字列化
+        const strVal = rawVal === undefined || rawVal === null ? "99" : String(rawVal);
+        // 2. 丸括弧内の文字を除去（"3(9:00)" -> "3"）
+        const removedParens = strVal.replace(/\(.*?\)/g, "").trim();
+        // 3. 数値かチェック
+        const numVal = Number(removedParens);
+        if (isNaN(numVal)) {
+          errLog.push(`患者ID:${rowValue[0]}の(${COL_INFO[i].title})が数値ではありません`);
+        } else {
+          updData[i].order = numVal;
+        }
+      }
+      if (errLog.length == 0) {
+        const { error, updateDocument } = useFirestoreDocumentUpdate<BaseRowValues>();
+        const result = await updateDocument(currentDate, `${jsCd}_${rowValue[1]}`, { dispOrder: updData });
+        if (result == false) {
+          errLog.push(`患者ID:${rowValue[0]}のデータ更新で想定外のエラーが発生しました`);
+        }
+      }
+      return errLog;
+    } catch (error) {
+      errLog.push(`患者ID:${rowValue[0]}で想定外のエラーが発生しました`);
+      return errLog;
     }
   }
 }

@@ -26,7 +26,7 @@ definePageMeta({
 import { signOut } from "firebase/auth";
 
 // composable
-const { setDataField, formatDateToJapanese, getGenderLabel } = useCommon();
+const { setDataField, formatDateToJapanese } = useCommon();
 
 // 型
 import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem, CookieData } from "~/types/baseType";
@@ -136,7 +136,7 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.kana = setDataField(newData, "kana", "カナシュトクエラー");
   refPersonalData.value.patientId = setDataField(newData, "patientId", "99999999");
   refPersonalData.value.birthDate = formatDateToJapanese(newData.birthDate);
-  refPersonalData.value.sex = getGenderLabel(newData.sex);
+  refPersonalData.value.sex = newData.sex;
   refDispData.value = newData.dispCd;
   refnextData.value = newData.active;
   refDispBtn.value = newData.dispBtn;

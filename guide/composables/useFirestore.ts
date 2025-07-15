@@ -1,10 +1,5 @@
 import { doc, getDoc, onSnapshot, setDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
-import type {
-  WithFieldValue,
-  DocumentReference,
-  CollectionReference,
-  WhereFilterOp,
-} from "firebase/firestore";
+import type { WithFieldValue, DocumentReference, CollectionReference, WhereFilterOp } from "firebase/firestore";
 import type { UnwrapRef } from "vue";
 
 const { MSG } = useConstants();

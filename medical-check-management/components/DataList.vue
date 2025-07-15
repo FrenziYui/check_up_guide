@@ -1,14 +1,18 @@
 <template>
   <div>
-    <Loading :isLoading="isLoading" />
-    <ToastMessage
+    <CommonLoading :isLoading="isLoading" />
+    <CommonToastMessage
       v-model="toastVisible"
       :message="toastPops.message"
       :type="toastPops.type"
       :vPos="toastPops.vPos"
       :hPos="toastPops.hPos"
     />
-    <button @click="downloadExcel">ぼたん</button>
+    <div class="px-4 flex space-x-4">
+      <button class="btn btn-primary" @click="downloadExcel">Excelファイル出力</button>
+      <button class="btn btn-secondary" @click="triggerFileSelect">Excelファイル取込</button>
+      <input type="file" ref="fileInput" @change="onFileChange" class="hidden" />
+    </div>
     <div id="table-container">
       <div id="data-table"></div>
     </div>
@@ -29,8 +33,15 @@ const { DATA_INDEX, NOT_INSPECTED, STATUS_ICONS, COL_INFO, MSG } = useConstants(
 // excel入出力モジュール
 import { ExcelIO } from "~/services/ExcelIO";
 
+// Inputファイル
+const fileData = ref<File | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
 // firestoreの条件用
 import { where } from "firebase/firestore";
+
+// 共通関数
+const { formatDateTimeToString } = useCommon();
 
 const props = defineProps<{
   showOrder: Boolean;
@@ -191,7 +202,8 @@ const downloadExcel = async () => {
   try {
     obj.init();
     const target = table.value.getSelectedData().length > 0 ? table.value.getSelectedData() : table.value.getData();
-    const result: ReturnInfo = await obj.excelExport(target);
+    const filename = `人間ドッグ経路案内システム_${props.currentDate}_${formatDateTimeToString(new Date())}.xlsx`;
+    const result: ReturnInfo = await obj.excelExport(target, filename);
     toastPops.value = {
       message: result.message,
       type: result.status,
@@ -206,6 +218,59 @@ const downloadExcel = async () => {
       vPos: TOAST_V_POS.MIDDLE,
     };
   } finally {
+    if (obj) {
+      obj.destructor();
+      isLoading.value = false;
+      toastVisible.value = true;
+    }
+  }
+};
+
+const triggerFileSelect = () => {
+  fileInput.value?.click();
+};
+
+const onFileChange = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    fileData.value = input.files[0];
+    await importExcel();
+  }
+};
+
+const importExcel = async () => {
+  isLoading.value = true;
+  const obj = new ExcelIO();
+
+  try {
+    if (fileData.value) {
+      obj.init();
+      const { data: result, error: errorlog } = await obj.excelImport(fileData.value, props.currentDate);
+      toastPops.value = {
+        message: result.message,
+        type: result.status,
+        hPos: TOAST_H_POS.CENTER,
+        vPos: TOAST_V_POS.MIDDLE,
+      };
+    } else {
+      toastPops.value = {
+        message: MSG.E006,
+        type: TOAST_TYPES.ERROR,
+        hPos: TOAST_H_POS.CENTER,
+        vPos: TOAST_V_POS.MIDDLE,
+      };
+    }
+  } catch (error) {
+    toastPops.value = {
+      message: MSG.E000,
+      type: TOAST_TYPES.ERROR,
+      hPos: TOAST_H_POS.CENTER,
+      vPos: TOAST_V_POS.MIDDLE,
+    };
+  } finally {
+    if (fileInput.value) {
+      fileInput.value.value = "";
+    }
     if (obj) {
       obj.destructor();
       isLoading.value = false;
