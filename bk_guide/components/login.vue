@@ -43,6 +43,8 @@
             <CommonClearIcon :isVisible="inputFlag.yyno" @click="onClickClear('yyno')" />
           </div>
         </div>
+        <div class="mb-2 overflow-wrap max-w-[30rem]">患者氏名： {{ name }}</div>
+        <div class="overflow-wrap max-w-[30rem]">コース名： {{ course }}</div>
         <form @submit.prevent="handleLogin" class="mt-4">
           <!-- ユーザID -->
           <label class="input input-bordered flex items-center justify-between gap-2 mb-5 w-full text-2xl">
@@ -62,7 +64,7 @@
               <CommonPassVisible v-model="isPassVisible" />
             </div>
           </label>
-          <button :disabled="isLoading" type="submit" class="btn btn-primary w-full">Login</button>
+          <button :disabled="!isFormValid || isLoading" type="submit" class="btn btn-primary w-full">Login</button>
         </form>
       </div>
     </div>
@@ -74,7 +76,7 @@ definePageMeta({
   middleware: "auth",
 });
 // import
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 // 型定義
 import type { ExLoginData, ExLoginFlag, PatientData, CookieData } from "~/types/baseType";
@@ -115,6 +117,7 @@ const inputData = reactive<ExLoginData>({
   yyno: "",
   password: "test01",
   patientNo: "",
+  // patientNo: "00020473",
 });
 // const inputData = reactive<ExLoginData>({
 //   userId: "",
@@ -128,9 +131,15 @@ const inputFlag = reactive<ExLoginFlag>({
   patientNo: false,
   yyno: false,
 });
+// reactive変数
+const name = ref<string>("");
+const course = ref<string>("");
 
 onMounted(async () => {
+  // test start
+  // cookieToday.value = "20250708";
   cookieToday.value = formatDateToString(new Date());
+  // test end
   cookieLang.value = "ja";
 });
 
@@ -142,36 +151,9 @@ const handleLogin = async () => {
 
     const email = inputData.userId + addMailAddress;
     await signInWithEmailAndPassword($firebaseAuth, email, inputData.password);
-    await new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged($firebaseAuth, (user) => {
-        if (user) {
-          unsubscribe();
-          resolve(true);
-        }
-      });
-    });
-
-    const result = await getFirestoreDocument();
     isLoading.value = false;
-    console.log("aaa");
-    console.log(result.data);
-    console.log("bbb");
-    if (result.count == 1) {
-      setKanName(result.data);
-      navigateTo("/");
-    } else {
-      console.log("aaaa");
-      await signOut($firebaseAuth);
-      toastPops.value = {
-        message: result.data,
-        type: "error",
-        vPos: "middle",
-        hPos: "center",
-      };
-      toastVisible.value = true;
-    }
+    navigateTo("/");
   } catch (error) {
-    console.log("vvvbv");
     isLoading.value = false;
     toastPops.value = {
       message: MSG.E001,
@@ -183,15 +165,33 @@ const handleLogin = async () => {
   }
 };
 
+const checkInput = async () => {
+  if (inputData.patientNo.length === PATIENT_LENGTH) {
+    isLoading.value = true;
+    const result = await getFirestoreDocument();
+    if (result.count == 1) {
+      setKanName(result.data);
+    } else {
+      toastPops.value = {
+        message: result.data,
+        type: "error",
+        vPos: "middle",
+        hPos: "center",
+      };
+      toastVisible.value = true;
+    }
+    isLoading.value = false;
+  } else {
+    name.value = "";
+    course.value = "";
+  }
+};
 const onLostYYNO = async () => {
   setKanName(`00${inputData.patientNo}_${inputData.yyno}`);
 };
 
 const setKanName = async (docid: string) => {
-  console.log(docid);
-  console.log(String(cookieToday.value));
   const { data, error } = await useFirestoreDocument<PatientData>(String(cookieToday.value), docid);
-  console.log(data.value);
   if (error.value != null || data.value == null) {
     toastPops.value = {
       message: MSG.EA00,
@@ -201,6 +201,8 @@ const setKanName = async (docid: string) => {
     };
     toastVisible.value = true;
   } else {
+    name.value = data.value.name;
+    course.value = data.value.courseNm;
     cookieYYNO.value = String(data.value.yy_no);
     cookieDocId.value = docid;
   }
@@ -239,9 +241,14 @@ const getFirestoreDocument = async (): Promise<{ count: number; data: string }> 
   }
 };
 
+const isFormValid = computed(() => !!name.value && !!course.value && !inputFlag.userId && !inputFlag.password);
+
 // 入力系method start
 const onInputChange = (field: keyof ExLoginData) => {
   inputFlag[field] = inputData[field] !== "";
+  if (field == "patientNo") {
+    checkInput();
+  }
 };
 const onClickClear = (field: keyof ExLoginData) => {
   inputData[field] = "";
