@@ -25,6 +25,7 @@ import { TabulatorFull as Tabulator } from "tabulator-tables";
 import type { ToastProps } from "~/types/toastType";
 import type { ReturnInfo } from "~/types/excelType";
 import type { DataValues, BaseRowValues, OrderValues } from "~/types/firestoreType";
+import type { CellComponent } from "tabulator-tables";
 
 // 定数
 import { TOAST_H_POS, TOAST_V_POS, TOAST_TYPES } from "~/types/toastType";
@@ -135,7 +136,6 @@ onMounted(async () => {
       vertAlign: "middle", // 垂直方向の配置
     },
     paginationCounter: "rows",
-    rowHeight: 45,
     data: snapData.value,
     layout: "fitColumns",
     initialHeaderFilter: [{ field: "deactive_flg", value: "false" }],
@@ -156,8 +156,9 @@ onMounted(async () => {
         field: "patientId",
         hozAlign: "center",
         headerFilter: "input",
-        width: 90,
+        width: 105,
         headerSortTristate: true,
+        formatter: (cell: CellComponent) => `<span class="text-xl">${cell.getValue()}</span>`,
       },
       {
         title: "カナ氏名",

@@ -76,6 +76,12 @@ const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientD
   cookieDocId.value
 );
 
+// state
+const selectTab = useState("selectTab");
+console.log("aaaa");
+console.log(selectTab.value);
+console.log(firedata.value?.dispBtn);
+
 onMounted(async () => {
   if (fireerror.value) {
     toastPops.value = {

@@ -32,6 +32,7 @@ export interface PersonalItem {
   name: string;
   patientId: string;
   sex: string;
+  age: number;
 }
 
 export interface StoolUrine {

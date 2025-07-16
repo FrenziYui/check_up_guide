@@ -8,7 +8,7 @@
         <span class="ml-5">性別:{{ data.sex }}</span>
       </div>
       <div class="ml-3 mb-2 leading-none text-2xl flex items-center">
-        <span>生年月日: {{ data.birthDate }}</span>
+        <span>生年月日: {{ data.birthDate }}　{{ data.age }} 才</span>
       </div>
       <div class="ml-3 mt-3 leading-none overflow-hidden whitespace-nowrap text-ellipsis">
         <div class="text-xl">{{ data.kana }} サマ</div>

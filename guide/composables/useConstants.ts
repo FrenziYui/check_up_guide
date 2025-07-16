@@ -1,6 +1,6 @@
 export const useConstants = () => {
   const TEST_MODE = false;
-  const COOKIE_SETTING = { maxAge: 60 * 60 }; //cookieの寿命は一時間
+  const COOKIE_SETTING = { maxAge: 60 * 60 * 23 }; //cookieの寿命は23時間
   const PATIENT_LENGTH = 8; //患者IDの桁数
   //E0xx ・・・標準エラーメッセージ
   const BASE_URL = "https://storage.googleapis.com/storage/v1/b/";

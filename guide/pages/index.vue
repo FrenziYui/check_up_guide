@@ -77,6 +77,7 @@ const refPersonalData = ref<PersonalItem>({
   name: "",
   patientId: "",
   sex: "",
+  age: 0,
 });
 const refnextData = ref<string>("");
 const refDispBtn = ref<DispItem[]>([{ info: 0, label: "", status: 0, param: "", visible: false }]);
@@ -137,6 +138,7 @@ const dataset = (newData: PatientData) => {
   refPersonalData.value.patientId = setDataField(newData, "patientId", "99999999");
   refPersonalData.value.birthDate = formatDateToJapanese(newData.birthDate);
   refPersonalData.value.sex = newData.sex;
+  refPersonalData.value.age = newData.age;
   refDispData.value = newData.dispCd;
   refnextData.value = newData.active;
   refDispBtn.value = newData.dispBtn;

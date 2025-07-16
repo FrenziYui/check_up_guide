@@ -1,8 +1,10 @@
 export const useConstants = () => {
-  const TEST_MODE = true;
+  const TEST_MODE = false;
 
   const APP_TITLE = "人間ドッグ経路案内システム";
-  const BASE_URL = TEST_MODE ? "http://localhost:8080/" : "https://chklist-server-672872025209.asia-northeast2.run.app";
+  const BASE_URL = TEST_MODE
+    ? "http://localhost:8080/"
+    : "https://medical-check-server-89056146929.asia-northeast2.run.app";
   const COOKIE_SETTING = { maxAge: 60 * 60 * 20 }; //cookieの寿命は20時間
   const ADD_MAIL_ADDRESS = "@holonicsystem.com";
   // 基本メッセージ

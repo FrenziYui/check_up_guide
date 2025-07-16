@@ -14,7 +14,7 @@
         <h2 class="card-title text-4xl mb-4">患者情報登録</h2>
         <!-- 患者ID -->
         <div class="flex items-center mb-5 text-2xl">
-          <span class="mr-2 whitespace-nowrap">患者ID　：</span>
+          <span class="mr-2 whitespace-nowrap">患者ID　</span>
           <div class="input input-bordered flex items-center gap-2 w-full">
             <input
               v-model="inputData.patientNo"
@@ -29,7 +29,7 @@
         </div>
         <!-- 予約番号 -->
         <div v-if="isyynoInput" class="flex items-center mb-5 text-2xl">
-          <span class="mr-2 whitespace-nowrap">予約番号：</span>
+          <span class="mr-2 whitespace-nowrap">予約番号</span>
           <div class="input input-bordered flex items-center gap-2 w-full">
             <input
               v-model="inputData.yyno"
@@ -37,7 +37,6 @@
               :maxlength="PATIENT_LENGTH"
               placeholder="予約番号"
               @input="onInputChange('yyno')"
-              @blur="onLostYYNO"
               class="grow bg-transparent focus:outline-none text-2xl"
             />
             <CommonClearIcon :isVisible="inputFlag.yyno" @click="onClickClear('yyno')" />
@@ -59,7 +58,7 @@
             />
             <div class="flex items-center ml-auto">
               <CommonClearIcon :isVisible="inputFlag.password" @click="onClickClear('password')" />
-              <CommonPassVisible v-model="isPassVisible" />
+              <!-- <CommonPassVisible v-model="isPassVisible" /> -->
             </div>
           </label>
           <button :disabled="isLoading" type="submit" class="btn btn-primary w-full">Login</button>
@@ -142,36 +141,28 @@ const handleLogin = async () => {
 
     const email = inputData.userId + addMailAddress;
     await signInWithEmailAndPassword($firebaseAuth, email, inputData.password);
-    await new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged($firebaseAuth, (user) => {
-        if (user) {
-          unsubscribe();
-          resolve(true);
-        }
-      });
-    });
-
-    const result = await getFirestoreDocument();
-    isLoading.value = false;
-    console.log("aaa");
-    console.log(result.data);
-    console.log("bbb");
-    if (result.count == 1) {
-      setKanName(result.data);
+    if (isyynoInput.value) {
+      await setKanName(`00${inputData.patientNo}_${inputData.yyno}`);
+      isLoading.value = false;
       navigateTo("/");
     } else {
-      console.log("aaaa");
-      await signOut($firebaseAuth);
-      toastPops.value = {
-        message: result.data,
-        type: "error",
-        vPos: "middle",
-        hPos: "center",
-      };
-      toastVisible.value = true;
+      const result = await getFirestoreDocument();
+      isLoading.value = false;
+      if (result.count == 1) {
+        await setKanName(result.data);
+        navigateTo("/");
+      } else {
+        await signOut($firebaseAuth);
+        toastPops.value = {
+          message: result.data,
+          type: "error",
+          vPos: "middle",
+          hPos: "center",
+        };
+        toastVisible.value = true;
+      }
     }
   } catch (error) {
-    console.log("vvvbv");
     isLoading.value = false;
     toastPops.value = {
       message: MSG.E001,
@@ -183,15 +174,8 @@ const handleLogin = async () => {
   }
 };
 
-const onLostYYNO = async () => {
-  setKanName(`00${inputData.patientNo}_${inputData.yyno}`);
-};
-
 const setKanName = async (docid: string) => {
-  console.log(docid);
-  console.log(String(cookieToday.value));
   const { data, error } = await useFirestoreDocument<PatientData>(String(cookieToday.value), docid);
-  console.log(data.value);
   if (error.value != null || data.value == null) {
     toastPops.value = {
       message: MSG.EA00,
