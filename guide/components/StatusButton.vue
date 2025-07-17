@@ -14,9 +14,9 @@
       @click="handleClick"
     >
       {{ item.label }}
-      <span v-if="item.status === 1 || item.status === 8 || item.status === 9" class="absolute bottom-1 right-1">
-        <img src="/icon/info.png" v-if="item.status === 1 || item.status === 9" class="w-8 h-8" />
-        <img src="/icon/check.svg" v-else-if="item.status === 8" class="w-8 h-8" />
+      <span class="absolute bottom-1 right-1">
+        <img src="/icon/info.png" v-if="item.info == '1'" class="w-7 h-7" />
+        <img src="/icon/check.svg" v-else-if="item.status == 9" class="w-7 h-7" />
       </span>
     </button>
 
@@ -63,9 +63,9 @@ const handlePasswordSubmit = (pass: string) => {
 };
 const buttonClass = computed(() => {
   switch (props.item.status) {
-    case 8:
-      return "bg-gray-400 text-secondary-foreground ";
     case 9:
+      return "bg-gray-400 text-secondary-foreground ";
+    case 8:
       return "bg-red-500 text-white";
     default:
       return "bg-secondary text-secondary-foreground";

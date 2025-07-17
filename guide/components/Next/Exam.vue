@@ -9,7 +9,7 @@
           : 'bg-accent text-black hover:bg-accent hover:bg-opacity-50',
       ]"
       @click="openModal"
-      :disabled="isDisabled"
+      v-if="!isDisabled"
       :aria-disabled="isDisabled"
     >
       MAP
@@ -30,6 +30,7 @@ const imageUrls = ref<string[]>([]);
 
 const nextMessage = ref("");
 const activeData = ref("");
+// 当初無効にしていたが、地図が無い場合非表示にしたが、無効のスタイルは残したまま
 const isDisabled = ref(false);
 const nextMessageVal = "t0100";
 

@@ -8,7 +8,9 @@ export default defineNuxtConfig({
   },
   css: ["~/assets/app.css", "swiper/css", "swiper/css/zoom", "swiper/css/navigation", "swiper/css/pagination"],
   ssr: false,
-
+  imports: {
+    dirs: ["composables", "composables/useTab"],
+  },
   app: {
     head: {
       link: [

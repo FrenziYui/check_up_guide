@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 // 型
-import type { StoolUrine } from "~/types/baseType";
+import type { StoolUrine } from "~/types/tabType";
 // reactiveデータ
 const result = ref<StoolUrine>();
 // props

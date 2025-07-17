@@ -11,7 +11,7 @@
     <!-- 上部中央のボタン -->
     <div class="flex justify-center gap-4 mb-3">
       <button
-        v-for="(label, index) in tabs"
+        v-for="(val, index) in tabs"
         :key="index"
         @click="selectedTab = index"
         :class="[
@@ -21,19 +21,24 @@
             : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-100',
         ]"
       >
-        {{ label }}
+        {{ val.label }}
       </button>
     </div>
 
     <!-- 下部の表示内容 -->
     <div class="w-full px-4">
       <div class="w-full p-4 border border-gray-400 rounded-lg bg-base shadow">
-        <div v-if="selectedTab === 0"><TabStoolUrine v-model:data="dataStoolUrine" @update:data="updStoolUrine" /></div>
+        <div v-if="selectedTab === 0">
+          <TabStoolUrine v-model:data="dataStoolUrine" @update:data="updateStoolUrine" />
+        </div>
         <div v-else-if="selectedTab === 1">
-          <TabChkJimu v-model:data="dataStoolUrine" @update:data="updStoolUrine" />
+          <TabChkJimu v-model:data="dataStoolUrine" @update:data="updateStoolUrine" />
         </div>
         <div v-else-if="selectedTab === 2"><TabChkMonshin /></div>
-        <div v-else-if="selectedTab === 3"><TabChkHoken /></div>
+        <div v-if="selectedTab === 3">
+          <TabChkHoken v-model:data="dataHoken" @update:data="updateHoken" />
+        </div>
+
         <div v-else-if="selectedTab === 4"><TabChkIshi /></div>
         <div v-else-if="selectedTab === 5"><TabPersonalInfo /></div>
       </div>
@@ -44,14 +49,20 @@
 <script setup lang="ts">
 // 型
 import type { ToastProps } from "~/types/toastType";
-import type { PatientData, StoolUrine, CookieData } from "~/types/baseType";
+import type { PatientData, CookieData } from "~/types/baseType";
 
 // 定数
 const { MSG, COOKIE_SETTING } = useConstants();
-const tabs = ["便/尿検査", "事務", "問診票", "保健師", "医師", "その他"];
+const tabs = [
+  { label: "便/尿検査", param: "urine" },
+  { label: "事務", param: "checkjim" },
+  { label: "問診票", param: "checkmon" },
+  { label: "保健師", param: "checkhkn" },
+  { label: "医師", param: "checkish" },
+  { label: "その他", param: "other" },
+] as const;
 
 // cookie
-const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
 const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
 const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 
@@ -61,14 +72,10 @@ const toastPops = ref<ToastProps>({ message: "" });
 
 // reactiveデータ
 const selectedTab = ref(0);
-const dataStoolUrine = ref<StoolUrine>({
-  StoolVisible: false,
-  Stool1: "",
-  Stool2: "",
-  UrineVisible: false,
-  Urine1: "",
-  Biko: "",
-});
+
+// 各タブのデータセット&更新
+const { dataStoolUrine, setStoolUrine, updStoolUrine } = useTabStoolUrine();
+const { dataHoken, setHoken, updHoken } = useTabHoken();
 
 // Firestoreデータ取得
 const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientData>(
@@ -77,12 +84,21 @@ const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientD
 );
 
 // state
-const selectTab = useState("selectTab");
-console.log("aaaa");
-console.log(selectTab.value);
-console.log(firedata.value?.dispBtn);
+const selectTab = useState<string>("selectTab");
 
 onMounted(async () => {
+  const param = selectTab.value;
+
+  // "panic" の場合は "その他" にマッピング
+  const actualParam = param === "panic" ? "other" : param;
+
+  const index = tabs.findIndex((tab) => tab.param === actualParam);
+  if (index !== -1) {
+    selectedTab.value = index;
+  } else {
+    selectedTab.value = 0;
+  }
+
   if (fireerror.value) {
     toastPops.value = {
       message: MSG.EA01,
@@ -99,42 +115,20 @@ onMounted(async () => {
     setStoolUrine(firedata.value);
   }
 });
-// 便尿の値設定
-const setStoolUrine = (data: PatientData) => {
-  // Firestoreのデータ設定
-  if (data.urine) {
-    dataStoolUrine.value = data.urine;
-  }
-  // 尿の表示設定
-  const urineItem = data.dispCd.find((item) => item.inpCd === "i9101");
-  if (urineItem) {
-    dataStoolUrine.value.UrineVisible = urineItem.status === "X" ? false : true;
-  }
-  // 便の表示設定
-  const StoolItem = data.dispCd.find((item) => item.inpCd === "i9102");
-  if (StoolItem) {
-    dataStoolUrine.value.StoolVisible = StoolItem.status === "X" ? false : true;
-  }
-};
+
 // 便尿の値更新
-const updStoolUrine = async () => {
-  const { error, setDocument } = useFirestoreDocumentUpdate<PatientData>();
-  const success = await setDocument(
-    cookieToday.value.toString(),
-    "00" + cookiePatient.value,
-    { urine: dataStoolUrine.value },
-    true
-  );
-  if (!success) {
-    toastPops.value = {
-      message: error.value ?? MSG.E004,
-      type: "error",
-      vPos: "middle",
-      hPos: "center",
-    };
-    toastVisible.value = true;
-  } else {
-    navigateTo("/");
+const updateStoolUrine = async () => {
+  if (firedata.value?.dispBtn) {
+    await updStoolUrine(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
   }
 };
 </script>
