@@ -1,19 +1,18 @@
 <template>
   <form @submit.prevent="submitForm" v-if="result">
     <!-- 入力フォーム -->
-    <div class="max-h-[80vh] overflow-y-auto p-4">
-      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg">
-        <QuestionRadio label="便検査１回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool1" />
+    <div class="max-h-[75vh] overflow-y-auto p-4 space-y-2">
+      <div class="text-2xl font-semibold mb-3">事務チェック</div>
+      <div v-for="item in checkboxItems" :key="item.key" class="form-control border border-accent p-4 rounded-lg">
+        <QuestionRadio
+          :label="item.label"
+          :options="item.option"
+          v-model="result[item.key]"
+          :optionFontClass="item.optionFontClass"
+        />
       </div>
-      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionRadio label="便検査２回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool2" />
-      </div>
-      <div v-if="result.UrineVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionRadio label="尿検査" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Urine1" />
-      </div>
-      <div class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionTextarea label="備考" v-model="result.Biko" :maxLength="100" heightClass="h-50" clearClass="pt-25" />
-      </div>
+
+      <QuestionTextarea label="備考" v-model="result.biko" :maxLength="100" />
     </div>
     <!-- ボタン -->
     <div class="modal-action mt-6 flex justify-end space-x-2">
@@ -25,16 +24,53 @@
 
 <script setup lang="ts">
 // 型
-import type { StoolUrine } from "~/types/baseType";
+import type { Jimu } from "~/types/tabType";
+interface CheckboxItem {
+  key: keyof Jimu;
+  label: string;
+  option: string[];
+  optionFontClass?: string;
+}
+// チェックボックスリスト
+const checkboxItems: CheckboxItem[] = [
+  {
+    key: "hknType",
+    label: "保険証の種類",
+    option: ["後期高齢者", "健保組合", "国保（大阪）", "国保（他）"],
+    optionFontClass: "text-xl font-semibold",
+  },
+  {
+    key: "hknContents",
+    label: "保険証の内容",
+    option: ["高齢受給者", "生活保護", "非課税世帯", ">自己負担免除"],
+    optionFontClass: "text-xl font-semibold",
+  },
+  { key: "hknCopy", label: "保険証のコピー", option: ["コピー済", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "hknId", label: "保険証のID", option: ["確認済", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "hknReturn", label: "保険証の返却", option: ["返却済", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "lemon", label: "レモン", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "breastCoupon", label: "乳クーポン", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "uterusCoupon", label: "子宮クーポン", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "ticket", label: "受診券", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "company", label: "会社", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "home", label: "自宅", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "counter", label: "窓口", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "tel", label: "TEL", option: ["有", "無"], optionFontClass: "text-xl font-semibold" },
+  { key: "address", label: "住所", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "meal", label: "食事", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+  { key: "fill", label: "記入用紙", option: ["あり", "なし"], optionFontClass: "text-xl font-semibold" },
+  { key: "corona", label: "コロナ問診", option: ["確認", "対象外"], optionFontClass: "text-xl font-semibold" },
+];
+
 // reactiveデータ
-const result = ref<StoolUrine>();
+const result = ref<Jimu>();
 // props
 const props = defineProps<{
-  data: StoolUrine;
+  data: Jimu;
 }>();
 // emits
 const emit = defineEmits<{
-  (e: "update:data", value: StoolUrine): void;
+  (e: "update:data", value: Jimu): void;
 }>();
 
 const close = () => {

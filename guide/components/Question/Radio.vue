@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p class="label mb-2 text-3xl">{{ label }}</p>
+    <p :class="`label ${labelFontClass}`">{{ label }}</p>
     <div class="flex gap-4 mb-2">
-      <label v-for="option in options" :key="option" class="label text-3xl cursor-pointer space-x-2">
+      <label v-for="option in options" :key="option" :class="`label cursor-pointer ${optionFontClass}`">
         <input
           type="radio"
           class="radio radio-success"
@@ -21,8 +21,14 @@ interface Props {
   label: string;
   options: string[];
   modelValue: string;
+  labelFontClass?: string;
+  optionFontClass?: string;
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  labelFontClass: "mb-2 text-2xl",
+  optionFontClass: "space-x-2 text-2xl",
+});
+
 const emit = defineEmits(["update:modelValue"]);
 
 // 値の取得&更新

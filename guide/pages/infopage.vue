@@ -31,15 +31,18 @@
         <div v-if="selectedTab === 0">
           <TabStoolUrine v-model:data="dataStoolUrine" @update:data="updateStoolUrine" />
         </div>
-        <div v-else-if="selectedTab === 1">
-          <TabChkJimu v-model:data="dataStoolUrine" @update:data="updateStoolUrine" />
+        <div v-if="selectedTab === 1">
+          <TabChkJimu v-model:data="dataJimu" @update:data="updateJimu" />
         </div>
-        <div v-else-if="selectedTab === 2"><TabChkMonshin /></div>
+        <div v-if="selectedTab === 2">
+          <TabChkMonshin v-model:data="dataMonshin" @update:data="updateMonshin" />
+        </div>
         <div v-if="selectedTab === 3">
           <TabChkHoken v-model:data="dataHoken" @update:data="updateHoken" />
         </div>
-
-        <div v-else-if="selectedTab === 4"><TabChkIshi /></div>
+        <div v-if="selectedTab === 4">
+          <TabChkIshi v-model:data="dataIshi" @update:data="updateIshi" />
+        </div>
         <div v-else-if="selectedTab === 5"><TabPersonalInfo /></div>
       </div>
     </div>
@@ -76,6 +79,9 @@ const selectedTab = ref(0);
 // 各タブのデータセット&更新
 const { dataStoolUrine, setStoolUrine, updStoolUrine } = useTabStoolUrine();
 const { dataHoken, setHoken, updHoken } = useTabHoken();
+const { dataIshi, setIshi, updIshi } = useTabIshi();
+const { dataMonshin, setMonshin, updMonshin } = useTabMonshin();
+const { dataJimu, setJimu, updJimu } = useTabJimu();
 
 // Firestoreデータ取得
 const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientData>(
@@ -113,6 +119,10 @@ onMounted(async () => {
   }
   if (firedata.value) {
     setStoolUrine(firedata.value);
+    setHoken(firedata.value);
+    setIshi(firedata.value);
+    setMonshin(firedata.value);
+    setJimu(firedata.value);
   }
 });
 
@@ -120,6 +130,66 @@ onMounted(async () => {
 const updateStoolUrine = async () => {
   if (firedata.value?.dispBtn) {
     await updStoolUrine(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
+  }
+};
+// 保健師チェックの値更新
+const updateHoken = async () => {
+  if (firedata.value?.dispBtn) {
+    await updHoken(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
+  }
+};
+// 医師チェックの値更新
+const updateIshi = async () => {
+  if (firedata.value?.dispBtn) {
+    await updIshi(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
+  }
+};
+// 問診チェックの値更新
+const updateMonshin = async () => {
+  if (firedata.value?.dispBtn) {
+    await updMonshin(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
+  }
+};
+// 事務チェックの値更新
+const updateJimu = async () => {
+  if (firedata.value?.dispBtn) {
+    await updJimu(
       cookieToday.value.toString(),
       cookieDocId.value,
       firedata.value.dispBtn,

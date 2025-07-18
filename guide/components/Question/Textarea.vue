@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <p class="label text-3xl mb-2">{{ label }}</p>
+    <p class="label text-2xl mb-2">{{ label }}</p>
     <textarea
       class="text-2xl textarea w-full resize-y pr-10"
       :class="heightClass"

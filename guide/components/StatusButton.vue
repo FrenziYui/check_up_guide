@@ -16,7 +16,6 @@
       {{ item.label }}
       <span class="absolute bottom-1 right-1">
         <img src="/icon/info.png" v-if="item.info == '1'" class="w-7 h-7" />
-        <img src="/icon/check.svg" v-else-if="item.status == 9" class="w-7 h-7" />
       </span>
     </button>
 

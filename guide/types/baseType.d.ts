@@ -1,5 +1,6 @@
 import type { LoginData, LoginFlag } from "~/types/loginType";
 import type { LangKey } from "~/types/langType";
+import type { StoolUrine, Hoken, Ishi, Monshin, Jimu } from "~/types/tabType";
 
 // ログイン情報(基本に患者ID・予約番号を追加)
 export interface ExLoginData extends LoginData {
@@ -47,6 +48,9 @@ export interface PatientData extends HeadItem, PersonalItem {
   pregnant: string | null;
   urine: StoolUrine | null;
   hoken: Hoken | null;
+  ishi: Ishi | null;
+  jimu: Jimu | null;
+  monshin: Monshin | null;
   upd_ymd_hms: string;
   yy_no: number;
   js_cd: string;

@@ -2,17 +2,17 @@
   <form @submit.prevent="submitForm" v-if="result">
     <!-- 入力フォーム -->
     <div class="max-h-[80vh] overflow-y-auto p-4">
-      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg">
-        <QuestionRadio label="便検査１回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool1" />
+      <div v-if="result.stoolVisible" class="form-control border border-accent p-4 rounded-lg">
+        <QuestionRadio label="便検査１回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.stool1" />
       </div>
-      <div v-if="result.StoolVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionRadio label="便検査２回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Stool2" />
+      <div v-if="result.stoolVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
+        <QuestionRadio label="便検査２回目" :options="['受領済', '後日郵送', '後日持参']" v-model="result.stool2" />
       </div>
-      <div v-if="result.UrineVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionRadio label="尿検査" :options="['受領済', '後日郵送', '後日持参']" v-model="result.Urine1" />
+      <div v-if="result.urineVisible" class="form-control border border-accent p-4 rounded-lg mt-5">
+        <QuestionRadio label="尿検査" :options="['受領済', '後日郵送', '後日持参']" v-model="result.urine1" />
       </div>
       <div class="form-control border border-accent p-4 rounded-lg mt-5">
-        <QuestionTextarea label="備考" v-model="result.Biko" :maxLength="100" />
+        <QuestionTextarea label="備考" v-model="result.biko" :maxLength="100" />
       </div>
     </div>
     <!-- ボタン -->

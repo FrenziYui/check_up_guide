@@ -1,38 +1,31 @@
-import type { Hoken } from "~/types/tabType";
+import type { Ishi } from "~/types/tabType";
 import type { PatientData, DispItem } from "~/types/baseType";
 
-export const useTabHoken = () => {
-  const dataHoken = ref<Hoken>({
-    question: "",
-    meal: "",
-    moisture: "",
-    drug: "",
-    anesthesia: "",
-    pain: "",
-    spasmolytic: "",
-    biopsy: "",
-    rivalry: "",
-    academic: "",
-    car: "",
+export const useTabIshi = () => {
+  const dataIshi = ref<Ishi>({
+    auscultation: "",
+    intermediate: "",
+    general: "",
+    dJudgment: "",
     biko: "",
   });
 
-  const setHoken = (data: PatientData) => {
-    if (data.hoken) dataHoken.value = data.hoken;
+  const setIshi = (data: PatientData) => {
+    if (data.ishi) dataIshi.value = data.ishi;
   };
 
-  const updHoken = async (
+  const updIshi = async (
     today: string,
     docId: string,
     dispBtn: DispItem[],
     onError: (msg: string) => void,
     onSuccess?: () => void
   ) => {
-    const updStatus = getStatus(dataHoken.value);
-    const updInfo = getInfo(dataHoken.value);
+    const updStatus = getStatus(dataIshi.value);
+    const updInfo = getInfo(dataIshi.value);
 
     const updatedDispBtn = dispBtn.map((item) =>
-      item.param === "checkhkn" ? { ...item, status: updStatus, info: updInfo } : item
+      item.param === "checkish" ? { ...item, status: updStatus, info: updInfo } : item
     );
 
     const { error, setDocument } = useFirestoreDocumentUpdate<PatientData>();
@@ -40,7 +33,7 @@ export const useTabHoken = () => {
       today,
       docId,
       {
-        hoken: dataHoken.value,
+        ishi: dataIshi.value,
         dispBtn: updatedDispBtn,
       },
       true
@@ -50,18 +43,18 @@ export const useTabHoken = () => {
     else onSuccess?.();
   };
 
-  const getStatus = (data: Hoken): number => {
+  const getStatus = (data: Ishi): number => {
     const { biko, ...others } = data;
     const allFilled = Object.values(others).every((value) => value !== "");
     return allFilled ? 9 : 0;
   };
-  const getInfo = (data: Hoken): string => {
+  const getInfo = (data: Ishi): string => {
     return data.biko == "" ? "0" : "1";
   };
 
   return {
-    dataHoken,
-    setHoken,
-    updHoken,
+    dataIshi,
+    setIshi,
+    updIshi,
   };
 };

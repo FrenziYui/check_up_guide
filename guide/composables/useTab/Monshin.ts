@@ -1,38 +1,33 @@
-import type { Hoken } from "~/types/tabType";
+import type { Monshin } from "~/types/tabType";
 import type { PatientData, DispItem } from "~/types/baseType";
 
-export const useTabHoken = () => {
-  const dataHoken = ref<Hoken>({
-    question: "",
-    meal: "",
-    moisture: "",
-    drug: "",
-    anesthesia: "",
-    pain: "",
-    spasmolytic: "",
-    biopsy: "",
-    rivalry: "",
-    academic: "",
-    car: "",
+export const useTabMonshin = () => {
+  const dataMonshin = ref<Monshin>({
+    base: "",
+    gastroscope: "",
+    fluoroscopy: "",
+    ladies: "",
+    petct: "",
+    colon: "",
     biko: "",
   });
 
-  const setHoken = (data: PatientData) => {
-    if (data.hoken) dataHoken.value = data.hoken;
+  const setMonshin = (data: PatientData) => {
+    if (data.monshin) dataMonshin.value = data.monshin;
   };
 
-  const updHoken = async (
+  const updMonshin = async (
     today: string,
     docId: string,
     dispBtn: DispItem[],
     onError: (msg: string) => void,
     onSuccess?: () => void
   ) => {
-    const updStatus = getStatus(dataHoken.value);
-    const updInfo = getInfo(dataHoken.value);
+    const updStatus = getStatus(dataMonshin.value);
+    const updInfo = getInfo(dataMonshin.value);
 
     const updatedDispBtn = dispBtn.map((item) =>
-      item.param === "checkhkn" ? { ...item, status: updStatus, info: updInfo } : item
+      item.param === "checkmon" ? { ...item, status: updStatus, info: updInfo } : item
     );
 
     const { error, setDocument } = useFirestoreDocumentUpdate<PatientData>();
@@ -40,7 +35,7 @@ export const useTabHoken = () => {
       today,
       docId,
       {
-        hoken: dataHoken.value,
+        monshin: dataMonshin.value,
         dispBtn: updatedDispBtn,
       },
       true
@@ -50,18 +45,18 @@ export const useTabHoken = () => {
     else onSuccess?.();
   };
 
-  const getStatus = (data: Hoken): number => {
+  const getStatus = (data: Monshin): number => {
     const { biko, ...others } = data;
     const allFilled = Object.values(others).every((value) => value !== "");
     return allFilled ? 9 : 0;
   };
-  const getInfo = (data: Hoken): string => {
+  const getInfo = (data: Monshin): string => {
     return data.biko == "" ? "0" : "1";
   };
 
   return {
-    dataHoken,
-    setHoken,
-    updHoken,
+    dataMonshin,
+    setMonshin,
+    updMonshin,
   };
 };
