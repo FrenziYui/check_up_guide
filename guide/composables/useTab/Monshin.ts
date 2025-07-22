@@ -6,6 +6,7 @@ export const useTabMonshin = () => {
     base: "",
     gastroscope: "",
     fluoroscopy: "",
+    mri: "",
     ladies: "",
     petct: "",
     colon: "",

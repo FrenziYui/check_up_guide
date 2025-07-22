@@ -100,8 +100,10 @@ const handleDoubleTap = (event: TouchEvent) => {
 };
 
 // パスワードチェック&モーダル表示
-const handlePasswordSubmit = (pass: string) => {
-  if (pass === "1") {
+const handlePasswordSubmit = async (pass: string) => {
+  const { password } = await usePassword();
+
+  if (pass == password.value) {
     showPasscode.value = false;
     showModal.value = true;
   } else {

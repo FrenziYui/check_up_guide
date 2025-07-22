@@ -42,7 +42,7 @@ const checkboxItems: CheckboxItem[] = [
   {
     key: "hknContents",
     label: "保険証の内容",
-    option: ["高齢受給者", "生活保護", "非課税世帯", ">自己負担免除"],
+    option: ["高齢受給者", "生活保護", "非課税世帯", "自己負担免除"],
     optionFontClass: "text-xl font-semibold",
   },
   { key: "hknCopy", label: "保険証のコピー", option: ["コピー済", "対象外"], optionFontClass: "text-xl font-semibold" },

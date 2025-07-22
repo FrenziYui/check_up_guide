@@ -57,3 +57,6 @@ export interface Jimu {
   corona: sting;
   biko: string;
 }
+export interface PersonalInfo {
+  biko: string;
+}

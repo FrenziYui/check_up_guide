@@ -46,8 +46,9 @@ const router = useRouter();
 const handleClick = () => {
   showModal.value = true;
 };
-const handlePasswordSubmit = (pass: string) => {
-  if (pass === "1") {
+const handlePasswordSubmit = async (pass: string) => {
+  const { password } = await usePassword();
+  if (pass == password.value) {
     selectTab.value = props.item.param;
     router.push({ path: "/infopage" });
   } else {

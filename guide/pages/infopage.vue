@@ -43,13 +43,24 @@
         <div v-if="selectedTab === 4">
           <TabChkIshi v-model:data="dataIshi" @update:data="updateIshi" />
         </div>
-        <div v-else-if="selectedTab === 5"><TabPersonalInfo /></div>
+        <div v-if="selectedTab === 5">
+          <TabPersonalInfo
+            v-model:data="dataEtc"
+            @update:data="updateEtc"
+            :physical="firedata?.physical ?? null"
+            :allergy="firedata?.allergy ?? null"
+            :etcInfo="firedata?.etcInfo"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: "auth",
+});
 // 型
 import type { ToastProps } from "~/types/toastType";
 import type { PatientData, CookieData } from "~/types/baseType";
@@ -82,6 +93,7 @@ const { dataHoken, setHoken, updHoken } = useTabHoken();
 const { dataIshi, setIshi, updIshi } = useTabIshi();
 const { dataMonshin, setMonshin, updMonshin } = useTabMonshin();
 const { dataJimu, setJimu, updJimu } = useTabJimu();
+const { dataEtc, setEtc, updEtc } = useTabEtc();
 
 // Firestoreデータ取得
 const { data: firedata, error: fireerror } = await useFirestoreDocument<PatientData>(
@@ -123,6 +135,7 @@ onMounted(async () => {
     setIshi(firedata.value);
     setMonshin(firedata.value);
     setJimu(firedata.value);
+    setEtc(firedata.value);
   }
 });
 
@@ -190,6 +203,21 @@ const updateMonshin = async () => {
 const updateJimu = async () => {
   if (firedata.value?.dispBtn) {
     await updJimu(
+      cookieToday.value.toString(),
+      cookieDocId.value,
+      firedata.value.dispBtn,
+      (err) => {
+        toastPops.value = { message: err, type: "error", vPos: "middle", hPos: "center" };
+        toastVisible.value = true;
+      },
+      () => navigateTo("/")
+    );
+  }
+};
+// その他の値更新
+const updateEtc = async () => {
+  if (firedata.value?.dispBtn) {
+    await updEtc(
       cookieToday.value.toString(),
       cookieDocId.value,
       firedata.value.dispBtn,

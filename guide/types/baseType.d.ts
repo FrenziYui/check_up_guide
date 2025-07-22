@@ -1,6 +1,6 @@
 import type { LoginData, LoginFlag } from "~/types/loginType";
 import type { LangKey } from "~/types/langType";
-import type { StoolUrine, Hoken, Ishi, Monshin, Jimu } from "~/types/tabType";
+import type { StoolUrine, Hoken, Ishi, Monshin, Jimu, PersonalInfo } from "~/types/tabType";
 
 // ログイン情報(基本に患者ID・予約番号を追加)
 export interface ExLoginData extends LoginData {
@@ -41,15 +41,28 @@ export interface DispItem {
   param: string;
   visible: boolean;
 }
+export interface EtcItem {
+  flg_panic: boolean;
+  flg_pregnancy: boolean;
+  highPressure1: string;
+  highPressure2: string;
+  highPressureE: string;
+  lowPressure1: string;
+  lowPressure2: string;
+  lowPressureE: string;
+  pregnancy: string;
+}
+
 export interface PatientData extends HeadItem, PersonalItem {
   dispCd: DispCdItem[];
   dispBtn: DispItem[];
   physical: string | null;
-  pregnant: string | null;
+  allergy: string | null;
   urine: StoolUrine | null;
   hoken: Hoken | null;
   ishi: Ishi | null;
   jimu: Jimu | null;
+  etc: PersonalInfo | null;
   monshin: Monshin | null;
   upd_ymd_hms: string;
   yy_no: number;
@@ -57,6 +70,7 @@ export interface PatientData extends HeadItem, PersonalItem {
   active: string;
   force: string;
   completed: string[] | null;
+  etcInfo: EtcItem;
 }
 
 // 画面の検査ボタン型
@@ -82,14 +96,4 @@ export interface CookieData {
   lang: LangKey;
   yyno: string;
   docid: string;
-}
-
-// これはいらない
-export interface ChkJimu {
-  StoolVisible: boolean;
-  Stool1: string;
-  Stool2: string;
-  UrineVisible: boolean;
-  Urine1: string;
-  Biko: string;
 }

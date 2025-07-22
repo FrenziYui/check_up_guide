@@ -29,16 +29,9 @@
 import type { LangKey } from "~/types/langType";
 import type { CookieData } from "~/types/baseType";
 
-import { signOut } from "firebase/auth";
 const { COOKIE_SETTING } = useConstants();
-const { $firebaseAuth } = useNuxtApp();
 // cookie
 const cookieUserId = useCookie<CookieData["userId"]>("userId", COOKIE_SETTING);
-const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SETTING);
-const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
-const cookieLang = useCookie<CookieData["lang"]>("lang", COOKIE_SETTING);
-const cookieYYNO = useCookie<CookieData["yyno"]>("yyno", COOKIE_SETTING);
-const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
 // props
 const props = withDefaults(
   defineProps<{
@@ -51,7 +44,10 @@ const props = withDefaults(
   }
 );
 // emit
-const emit = defineEmits<{ (event: "langage-sent", langage: LangKey): void }>();
+const emit = defineEmits<{
+  (event: "logout-request"): void;
+  (event: "langage-sent", langage: LangKey): void;
+}>();
 
 // 表示切替用
 const showModalLogout = ref(false);
@@ -68,15 +64,8 @@ const handleLogout = () => {
 };
 
 // ログアウトOKの場合
-const handleConfirmLogout = async () => {
-  await signOut($firebaseAuth);
-  cookieUserId.value = "";
-  cookiePatient.value = "";
-  cookieToday.value = "";
-  cookieLang.value = "ja";
-  cookieYYNO.value = "";
-  cookieDocId.value = "";
-  navigateTo("/login");
+const handleConfirmLogout = () => {
+  emit("logout-request");
 };
 
 const langageValueSent = (val: LangKey) => {

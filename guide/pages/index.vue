@@ -9,7 +9,7 @@
   />
 
   <div class="flex flex-col h-screen">
-    <Header :title="refHeadData.courseNm" @langage-sent="languageValueSent" />
+    <Header :title="refHeadData.courseNm" @langage-sent="languageValueSent" @logout-request="handleLogout" />
     <Personal :data="refPersonalData" />
     <Examination :items="refDispData" :langDt="langDt" :active="refnextData" />
     <NextExam :item="refnextData" :langDt="langDt" />
@@ -29,7 +29,7 @@ import { signOut } from "firebase/auth";
 const { setDataField, formatDateToJapanese } = useCommon();
 
 // 型
-import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem, CookieData } from "~/types/baseType";
+import type { PatientData, HeadItem, PersonalItem, DispCdItem, DispItem, CookieData, EtcItem } from "~/types/baseType";
 import type { AllLanguage, LangStr, LangKey } from "~/types/langType";
 import type { ToastProps } from "~/types/toastType";
 
@@ -44,6 +44,8 @@ const cookiePatient = useCookie<CookieData["patientNo"]>("patientNo", COOKIE_SET
 const cookieToday = useCookie<CookieData["today"]>("today", COOKIE_SETTING);
 const cookieLang = useCookie<CookieData["lang"]>("lang", COOKIE_SETTING);
 const cookieDocId = useCookie<CookieData["docid"]>("docid", COOKIE_SETTING);
+const cookieUserId = useCookie<CookieData["userId"]>("userId", COOKIE_SETTING);
+const cookieYYNO = useCookie<CookieData["yyno"]>("yyno", COOKIE_SETTING);
 
 // cookieの値がない場合はログイン画面へリダイレクト
 if (!cookiePatient.value || !cookieToday.value || !cookieLang.value || !cookieDocId.value) {
@@ -80,7 +82,18 @@ const refPersonalData = ref<PersonalItem>({
   age: 0,
 });
 const refnextData = ref<string>("");
-const refDispBtn = ref<DispItem[]>([{ info: 0, label: "", status: 0, param: "", visible: false }]);
+const refDispBtn = ref<DispItem[]>([{ info: "0", label: "", status: 0, param: "", visible: false }]);
+const refEtcData = ref<EtcItem>({
+  flg_panic: false,
+  flg_pregnancy: false,
+  highPressure1: "",
+  highPressure2: "",
+  highPressureE: "",
+  lowPressure1: "",
+  lowPressure2: "",
+  lowPressureE: "",
+  pregnancy: "",
+});
 
 // 現在選択されている言語
 const langDt = ref<LangStr>();
@@ -142,6 +155,31 @@ const dataset = (newData: PatientData) => {
   refDispData.value = newData.dispCd;
   refnextData.value = newData.active;
   refDispBtn.value = newData.dispBtn;
+  refEtcData.value = newData.etcInfo;
+  const idx = refDispBtn.value.findIndex((btn) => btn.param === "panic");
+  if (idx !== -1) {
+    if (refEtcData.value.flg_panic) {
+      refDispBtn.value[idx].visible = true;
+      refDispBtn.value[idx].info = "1";
+    } else {
+      refDispBtn.value[idx].visible = false;
+      refDispBtn.value[idx].info = "0";
+    }
+  }
+  const idx2 = refDispBtn.value.findIndex((btn) => btn.param === "other");
+  if (idx2 !== -1) {
+    // 妊娠の情報有OR備考有ORアレルギー有OR身体情報有の場合"1"
+    if (
+      (newData.etcInfo.pregnancy?.trim() ?? "") !== "" ||
+      (newData.etc?.biko?.trim() ?? "") !== "" ||
+      (newData.allergy?.trim() ?? "") !== "" ||
+      (newData.physical?.trim() ?? "") !== ""
+    ) {
+      refDispBtn.value[idx2].info = "1";
+    } else {
+      refDispBtn.value[idx2].info = "0";
+    }
+  }
 };
 // firestoreから言語データを取得
 const langGet = async () => {
@@ -161,5 +199,17 @@ const langGet = async () => {
     };
     toastVisible.value = true;
   }
+};
+
+const handleLogout = async () => {
+  await signOut($firebaseAuth);
+  cookieUserId.value = "";
+  cookiePatient.value = "";
+  cookieToday.value = "";
+  cookieYYNO.value = "";
+  cookieLang.value = "ja";
+  cookieDocId.value = "";
+  stop();
+  navigateTo("/login");
 };
 </script>
